@@ -82,13 +82,31 @@ header.carousel .fill {
 }
 .nav li a
 {
-    font-weight: 600;
+    font-weight: 500;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
     font-size: 15px;
+}
+
+.dropdown-menu li a:hover
+{
+    background-color: #2672EC;
 }
 
 .nav li a:hover
 {
  color: #cccccc;
+}
+
+.pic{
+
+    margin-top: 40px;
+}
+
+.btn-grp button
+{
+    width:80px;
+    margin-left: 30px;
+
 }
 /* Footer Styles */
 
