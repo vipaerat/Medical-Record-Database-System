@@ -32,7 +32,7 @@
                <span class="icon-bar"></span>
                <span class="icon-bar"></span>
                </button>
-               <a href="../index.html" class="navbar-brand">
+               <a href="../index.php" class="navbar-brand">
                   <p class="brand">MEDICAL RECORDS</p>
                </a>
             </div>
@@ -40,7 +40,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                <ul class="nav navbar-nav navbar-right">
                   <li class="active">
-                     <a href="index.html">Home</a>
+                     <a href="index.php">Home</a>
                   </li>
                   <li>
                      <a href="profile.html">Profile</a>
@@ -55,7 +55,7 @@
                            <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
                         </li>
                         <li>
-                           <a href="../index.html"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                           <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                         </li>
                      </ul>
                   </li>

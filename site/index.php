@@ -42,13 +42,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="index.html" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
+                <a href="index.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right" >
                     <li class="active">
-                        <a href="index.html">Home</a>
+                        <a href="index.php">Home</a>
                     </li>
                 </ul>
             </div>
@@ -76,9 +76,9 @@
                         <div class="row">
                         <div class="col-md-3">
                         <div class="container">
-                        <div class="btn-margin"><a href="./user/index.html"><button class="btn btn-default">User</button></a></div>
-                        <div class="btn-margin"><a href="./doctor/index.html"><button class="btn btn-default">Doctor</button></a></div>
-                        <div class="btn-margin"><a href="./pharmacist/index.html"><button class="btn btn-default">Pharmacist</button></a></div>
+                        <div class="btn-margin"><a href="./user/index.php"><button class="btn btn-default">User</button></a></div>
+                        <div class="btn-margin"><a href="./doctor/index.php"><button class="btn btn-default">Doctor</button></a></div>
+                        <div class="btn-margin"><a href="./pharmacist/index.php"><button class="btn btn-default">Pharmacist</button></a></div>
                         </div>
                         </div>
                         <div class="col-md-5" style="margin-left:60px">
