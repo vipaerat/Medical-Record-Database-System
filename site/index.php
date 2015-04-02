@@ -70,7 +70,7 @@
             <div class="col-md-4 col-md-offset-4">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h4><i class="fa fa-fw fa-user"></i> Login </h4>
+                        <h4 class="text-center"><i class="fa fa-fw fa-user"></i> Login </h4>
                     </div>
                     <div class="panel-body">
                         <div class="row">

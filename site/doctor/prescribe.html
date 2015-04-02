@@ -50,11 +50,11 @@
                     <li>
                         <a href="index.html">Home</a>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="profile.html">Profile</a>
                     </li>
-                    <li>
-                        <a href="prescribe.html">Prescribe</a>
+                    <li  class="active">
+                        <a href="prescibe.html">Prescribe</a>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
@@ -80,21 +80,30 @@
         <!-- Page Heading/Breadcrumbs -->
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Profile
+                <h1 class="page-header">Prescribe
                 </h1>
                 <ol class="breadcrumb">
                     <li><a href="index.html">Home</a>
                     </li>
-                    <li class="active">Profile</li>
+                    <li class="active">Prescribe</li>
                 </ol>
             </div>
         </div>
         <!-- /.row -->
-        <!-- Contact Form -->
-        <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
+
+        <!-- Intro Content -->
         <div class="row">
             <div class="col-md-8">
-                <form class="form-horizontal" name="profile" id="profileForm" novalidate>
+                <form class="form-horizontal" name="profile" id="profileForm">
+                    <div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">ID:</label>
+                            <div class="col-md-9">
+                                <input type="email" class="form-control" id="userid" placeholder="UserID" value="">
+                            </div>
+                            <p class="help-block"></p>
+                        </div>
+                    </div>
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Name:</label>
@@ -108,7 +117,7 @@
                         <div class="controls">
                             <label class="control-label col-md-3">Gender:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="Male">
+                                <input type="text" class="form-control" style="width:100px;" id="gender" readonly value="Male">
                             </div>
                         </div>
                     </div>
@@ -129,42 +138,58 @@
                             </div>
                         </div>
                     </div>
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Email Address:</label>
-                            <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" value="">
-                            </div>
-                        </div>
-                    </div>
                     <div id="extras"></div>
                     <div class="control-group form-group">
                         <div class="controls">
-                            <label class="control-label col-md-3">Address:</label>
+                            <label class="control-label col-md-3">Description:</label>
                             <div class="col-md-9">
                                 <textarea rows="10" cols="50" class="form-control" id="address" maxlength="999" style="resize:none"></textarea>
                             </div>
                         </div>
                     </div>
+                    <div class="control-group form-group">
+                        <div class="controls">
+                        <label class="control-label col-md-3">Medicine:</label>
+                        <div class="col-md-9" id="addmed">
+                        <!-- <button class="btn btn-primary" onclick="return addmed();">Add Medicine</button> -->
+                            <div class="form-group med-group">
+                            <div class="col-xs-7">
+                                <input type="text" class="form-control" name="option[]" />
+                            </div>
+                            <div class="col-xs-4">
+                                <button type="button" class="btn btn-default removeButton">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            </div>
+                            <div class="form-group med-group hide" id="optionTemplate">
+                            <div class="col-xs-7">
+                                <input class="form-control" type="text" name="option[]" />
+                            </div>
+                            <div class="col-xs-4">
+                                <button type="button" class="btn btn-default removeButton">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            </div>
+                            <div class="row" style="margin-left:2px;">
+                                <button type="button" class="btn btn-default addButton">
+                                    <i class="fa fa-plus"></i>&nbsp;Add Med
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                     <div id="success"></div>
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
-                    <button class="btn btn-primary">Edit</button>
-                    <button type="submit" class="btn btn-success" disabled>Save</button>
-                </div>
+                        <button class="btn btn-primary">Advise</button>
+                    </div>
                 </form>
-            </div>
-            <div class="col-md-4">
-                <div class="text-center">
-                    <img src="../images/pic.gif" class="img-thumbnail pic" width="150" height="180" alt="Thumbnail Image"><br>
-                    <h4>Username</h4>
-                </div>
             </div>
         </div>
         <!-- /.row -->
-
         <hr>
-
         <!-- Footer -->
         <footer>
             <div class="row">
@@ -179,14 +204,26 @@
 
     <!-- jQuery -->
     <script src="../js/jquery.js"></script>
+    <script type="text/JavaScript">
+        $("#addmed").on('click', '.addButton', function() {
+            var $template = $('#optionTemplate'),
+                $clone    = $template
+                                .clone()
+                                .removeClass('hide')
+                                .removeAttr('id')
+                                .insertBefore($template);
+        })
 
+        // Remove button click handler
+        .on('click', '.removeButton', function() {
+            var $row    = $(this).parents('.med-group');
+
+            // Remove element containing the option
+            $row.remove();
+        });
+    </script>
     <!-- Bootstrap Core JavaScript -->
     <script src="../js/bootstrap.min.js"></script>
-
-    <!-- Contact Form JavaScript -->
-    <!-- Do not edit these files! In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
-    <!-- <script src="js/jqBootstrapValidation.js"></script>
-    // <script src="js/contact_me.js"></script>-->
 
 </body>
 

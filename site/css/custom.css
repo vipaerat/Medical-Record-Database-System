@@ -66,7 +66,7 @@ header.carousel .fill {
     display: block;
     font-style: italic;
 }
-/* Custom style */
+/* index page css */
 .btn-margin
 {
     margin-bottom: 1em;
@@ -89,14 +89,21 @@ header.carousel .fill {
 
 .dropdown-menu li a:hover
 {
-    background-color: #2672EC;
+    background: #cccccc;
 }
 
 .nav li a:hover
 {
- color: #cccccc;
+ color: #000000;
 }
 
+/* Footer Styles */
+
+footer {
+    margin: 50px 0;
+}
+
+/* profile page css*/
 .pic{
 
     margin-top: 40px;
@@ -108,11 +115,30 @@ header.carousel .fill {
     margin-left: 30px;
 
 }
-/* Footer Styles */
 
-footer {
-    margin: 50px 0;
+/* doctor page css*/
+.prescription
+{
+    margin-top: 40px;
 }
+
+.searchbox
+{
+    margin-top:10px;
+    margin-bottom: 5px;
+}
+
+.panel-heading a:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+}
+
+.panel-heading a.collapsed:after {
+    content:"\e080";
+}
+
 
 /* Responsive Styles */
 
