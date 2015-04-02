@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="./files/jquery.js" type="text/javascript"></script>
     <title>Medical Record Managment System</title>
 
     <!-- Bootstrap Core CSS -->
@@ -42,13 +43,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="index.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
+                <a href="index.html" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right" >
                     <li class="active">
-                        <a href="index.php">Home</a>
+                        <a href="index.html">Home</a>
                     </li>
                 </ul>
             </div>
@@ -70,15 +71,15 @@
             <div class="col-md-4 col-md-offset-4">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h4 class="text-center"><i class="fa fa-fw fa-user"></i> Login </h4>
+                        <h4><i class="fa fa-fw fa-user"></i> Login </h4>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                         <div class="col-md-3">
                         <div class="container">
-                        <div class="btn-margin"><a href="./user/index.php"><button class="btn btn-default">User</button></a></div>
-                        <div class="btn-margin"><a href="./doctor/index.php"><button class="btn btn-default">Doctor</button></a></div>
-                        <div class="btn-margin"><a href="./pharmacist/index.php"><button class="btn btn-default">Pharmacist</button></a></div>
+                        <div class="btn-margin"><button class="btn btn-default" onclick="userlogin()">User</button></div>
+                        <div class="btn-margin"><button class="btn btn-default" onclick="doctorlogin()">Doctor</button></div>
+                        <div class="btn-margin"><button class="btn btn-default" onclick="phalogin()">Pharmacist</button></div>
                         </div>
                         </div>
                         <div class="col-md-5" style="margin-left:60px">
@@ -119,6 +120,47 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
+<script type="text/javascript">
+	function userlogin()
+	{
+		$.post("auth.php",
+			{
+				type : "user",
+			}
+	).done(function (data) {
+		//alert(data);
+	  	window.location = data;
+	});
+	}
+	
+	function doctorlogin()
+	{
+		$.post("auth.php",
+			{
+				type : "doctor",
+			}
+		).done(function (data) {
+		//alert(data);
+	  	window.location = data;
+	});
+	}
+	
+	function phalogin()
+	{
+		$.post("auth.php",
+			{
+				type : "pharmacist",
+			}
+		).done(function (data) {
+		//alert(data);
+	  	window.location = data;
+	});
+	}
+	
+</script>
+
 </body>
+
+
 
 </html>
