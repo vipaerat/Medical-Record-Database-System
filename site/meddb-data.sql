@@ -1,4 +1,4 @@
-﻿insert into Patient values('ankitk@iitrpr.ac.in', 'Ankit Khokhar','male','1993-01-26' );
+INSERT into Patient values('ankitk@iitrpr.ac.in', 'Ankit Khokhar','male','1993-01-26' );
 insert into Patient values('anshuman@gmail.com', 'Anshuman Yadav','male','1994-04-23' );
 insert into Patient values('balwinder@iitrpr.ac.in', 'Balwinder Sodhi','male','1973-01-26' );
 insert into Patient values('ranjana@iitrpr.ac.in', 'Ranjana Sodhi','female','1983-01-26' );
