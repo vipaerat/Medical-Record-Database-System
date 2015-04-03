@@ -60,7 +60,7 @@ else if(isset($_SESSION['type']))
 		  $_SESSION['token'] = $client->getAccessToken();
 		  if(strcmp($type, "user")==0)
 		  {
-		  	$redirect = 'http://localhost/site/user/index.html';
+		  	$redirect = 'http://localhost/site/user/index.php';
 		  }
 		  elseif (strcmp($type,"doctor")==0) {
 			$redirect = 'http://localhost/site/doctor/index.php';  
