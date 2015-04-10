@@ -1,3 +1,8 @@
+<?php
+session_start();
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,7 +62,7 @@
                         <a href="schedule.html">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $email; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>

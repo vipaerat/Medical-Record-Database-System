@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once 'google-api-php-client/src/Google_Client.php';
 require_once 'google-api-php-client/src/contrib/Google_Oauth2Service.php';
 
@@ -58,9 +59,16 @@ else if(isset($_SESSION['type']))
 		
 		  $client->authenticate($_GET['code']);
 		  $_SESSION['token'] = $client->getAccessToken();
+		  $authUrl = $client->createAuthUrl();
+		$user = $oauth2->userinfo->get();
+		$name = filter_var($user['name'], FILTER_SANITIZE_EMAIL);
+		$email=$user['email'];
+		$_SESSION['name']=$name;
+		$_SESSION['token'] = $client->getAccessToken();
+		$_SESSION['email']=$email;
 		  if(strcmp($type, "user")==0)
 		  {
-		  	$redirect = 'http://localhost/site/user/index.html';
+		  	$redirect = 'http://localhost/site/user/index.php';
 		  }
 		  elseif (strcmp($type,"doctor")==0) {
 			$redirect = 'http://localhost/site/doctor/index.php';  
@@ -77,26 +85,33 @@ else if(isset($_SESSION['type']))
 		 $client->setAccessToken($_SESSION['token']);
 	}
 										 
-	if (isset($_REQUEST['logout'])) {
-		  unset($_SESSION['token']);
-		  unset($_SESSION['email']);
-		  unset($_SESSION['type']);
-		  $client->revokeToken();
-	}
+	// if (isset($_REQUEST['logout'])) {
+	// 	  unset($_SESSION['token']);
+	// 	  unset($_SESSION['email']);
+	// 	  unset($_SESSION['type']);
+	// 	  $client->revokeToken();
+	// }
 										 
-	if ($client->getAccessToken()) {
-		$user = $oauth2->userinfo->get();
-		$name = filter_var($user['name'], FILTER_SANITIZE_EMAIL);
-		$email=$user['email'];
-		$_SESSION['token'] = $client->getAccessToken();
-		$_SESSION['email']=$email;
-	} 
-	else {
-		$authUrl = $client->createAuthUrl();
-	}
+	// if ($client->getAccessToken()) {
+	// 	$user = $oauth2->userinfo->get();
+	// 	$name = filter_var($user['name'], FILTER_SANITIZE_EMAIL);
+	// 	$email=$user['email'];
+	// 	$_SESSION['name']=$name;
+	// 	$_SESSION['token'] = $client->getAccessToken();
+	// 	$_SESSION['email']=$email;
+	// } 
+	// else {
+	// 	$authUrl = $client->createAuthUrl();
+	// 	$user = $oauth2->userinfo->get();
+	// 	$name = filter_var($user['name'], FILTER_SANITIZE_EMAIL);
+	// 	$email=$user['email'];
+	// 	$_SESSION['name']=$name;
+	// 	$_SESSION['token'] = $client->getAccessToken();
+	// 	$_SESSION['email']=$email;
+	// }
 }
 else {
-	echo "else";
+	
 	header('Location: ../index.php');
 }
 	

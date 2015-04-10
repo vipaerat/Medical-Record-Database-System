@@ -1,3 +1,8 @@
+<?php
+session_start();
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,6 +36,7 @@
 
 <body>
 
+
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -51,19 +57,19 @@
                         <a href="index.php">Home</a>
                     </li>
                     <li>
-                        <a href="profile.html">Profile</a>
+                        <a href="profile.php">Profile</a>
                     </li>
                     <li>
-                        <a href="schedule.html">Schedule</a>
+                        <a href="schedule.php">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $email; ?> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
                             </li>
                             <li>
-                                <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                                <a href="logout.php" ><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                             </li>
                         </ul>
                     </li>
@@ -81,122 +87,125 @@
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">
-                    Welcome User
+                    Home
                 </h1>
             </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><i class="fa fa-fw fa-check"></i> Bootstrap v3.2.0</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-                        <a href="#" class="btn btn-default">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><i class="fa fa-fw fa-gift"></i> Free &amp; Open Source</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-                        <a href="#" class="btn btn-default">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><i class="fa fa-fw fa-compass"></i> Easy to Use</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, optio corporis quae nulla aspernatur in alias at numquam rerum ea excepturi expedita tenetur assumenda voluptatibus eveniet incidunt dicta nostrum quod?</p>
-                        <a href="#" class="btn btn-default">Learn More</a>
-                    </div>
+        </div>
+        <div class="row">
+            <div class="container col-md-9 col-md-offset-1 prescription">
+                <div class="panel panel-primary">
+                   <div class="panel-heading">
+                      <h4 class="text-center"><i class="fa fa-book fa-fw"></i>&nbsp;Recent Prescriptions</h4>
+                   </div>
+                   <div class="row">
+                      <div class="col-md-6 col-md-offset-3 searchbox">
+                         <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                            </span>
+                         </div>
+                         <!-- /input-group -->
+                      </div>
+                   </div>
+                   <div class="row">
+                      <div class="panel-body">
+                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                               <div class="panel-heading" role="tab" id="headingOne">
+                                  <h4 class="panel-title">
+                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                     Prescription #1
+                                     </a>
+                                  </h4>
+                               </div>
+                               <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                  <div class="panel-body">
+                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="panel panel-default">
+                               <div class="panel-heading" role="tab" id="headingTwo">
+                                  <h4 class="panel-title">
+                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                     Prescription #2
+                                     </a>
+                                  </h4>
+                               </div>
+                               <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                  <div class="panel-body">
+                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="panel panel-default">
+                               <div class="panel-heading" role="tab" id="headingThree">
+                                  <h4 class="panel-title">
+                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                     Prescription #3
+                                     </a>
+                                  </h4>
+                               </div>
+                               <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                  <div class="panel-body">
+                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="panel panel-default">
+                               <div class="panel-heading" role="tab" id="headingFour">
+                                  <h4 class="panel-title">
+                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                     Prescription #4
+                                     </a>
+                                  </h4>
+                               </div>
+                               <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                  <div class="panel-body">
+                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                  </div>
+                               </div>
+                            </div>
+                            <div class="panel panel-default">
+                               <div class="panel-heading" role="tab" id="headingFive">
+                                  <h4 class="panel-title">
+                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                     Prescription #5
+                                     </a>
+                                  </h4>
+                               </div>
+                               <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                                  <div class="panel-body">
+                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                      <div class="row">
+                         <button class="btn btn-default col-md-offset-6" style="margin-bottom:1em">Older</button>
+                      </div>
+                   </div>
                 </div>
             </div>
         </div>
+            
+            
+            
+        
         <!-- /.row -->
 
         <!-- Portfolio Section -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Portfolio Heading</h2>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="portfolio-item.html">
-                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="portfolio-item.html">
-                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="portfolio-item.html">
-                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="portfolio-item.html">
-                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="portfolio-item.html">
-                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="portfolio-item.html">
-                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
-                </a>
-            </div>
-        </div>
+       
         <!-- /.row -->
 
-        <!-- Features Section -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Modern Business Features</h2>
-            </div>
-            <div class="col-md-6">
-                <p>The Modern Business template by Start Bootstrap includes:</p>
-                <ul>
-                    <li><strong>Bootstrap v3.2.0</strong>
-                    </li>
-                    <li>jQuery v1.11.0</li>
-                    <li>Font Awesome v4.1.0</li>
-                    <li>Working PHP contact form with validation</li>
-                    <li>Unstyled page elements for easy customization</li>
-                    <li>17 HTML pages</li>
-                </ul>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, omnis doloremque non cum id reprehenderit, quisquam totam aspernatur tempora minima unde aliquid ea culpa sunt. Reiciendis quia dolorum ducimus unde.</p>
-            </div>
-            <div class="col-md-6">
-                <img class="img-responsive" src="http://placehold.it/700x450" alt="">
-            </div>
-        </div>
+        
         <!-- /.row -->
 
         <hr>
 
-        <!-- Call to Action Section -->
-        <div class="well">
-            <div class="row">
-                <div class="col-md-8">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias, expedita, saepe, vero rerum deleniti beatae veniam harum neque nemo praesentium cum alias asperiores commodi.</p>
-                </div>
-                <div class="col-md-4">
-                    <a class="btn btn-lg btn-default btn-block" href="#">Call to Action</a>
-                </div>
-            </div>
-        </div>
-
-        <hr>
+       
 
         <!-- Footer -->
         <footer>
@@ -217,6 +226,7 @@
     <script src="../js/bootstrap.min.js"></script>
 
     <!-- Script to Activate the Carousel -->
+
 
 </body>
 

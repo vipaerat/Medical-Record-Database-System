@@ -1,4 +1,29 @@
+<?php
+session_start();
+include('../connection.php');
+
+$email = $_SESSION['email'];
+
+$patientInfoQuery =<<<EOF
+SELECT name,gender,date_of_birth
+FROM patient
+WHERE id_pat = '$email'
+EOF;
+
+
+$res = pg_query($db, $patientInfoQuery);
+$row = pg_fetch_row($res);
+
+$name = $row[0];
+$gender = $row[1];
+$date_of_birth = $row[2];
+
+
+
+?>
+
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -31,6 +56,7 @@
 
 <body>
 
+
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -57,7 +83,7 @@
                         <a href="schedule.html">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $email; ?> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
@@ -99,7 +125,7 @@
                         <div class="controls">
                             <label class="control-label col-md-3">Name:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="name" placeholder="Username" value="">
+                                <input type="text" class="form-control" id="name" value= "<?php echo $name; ?>" >
                             </div>
                             <p class="help-block"></p>
                         </div>
@@ -108,7 +134,7 @@
                         <div class="controls">
                             <label class="control-label col-md-3">Gender:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="Male">
+                                <input type="text" class="form-control" style="width:100px;" id="age" value= <?php echo $gender; ?>>
                             </div>
                         </div>
                     </div>
@@ -116,7 +142,7 @@
                         <div class="controls">
                             <label class="control-label col-md-3">Age:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="20">
+                                <input type="text" class="form-control" style="width:100px;" id="age" value="">
                             </div>
                         </div>
                     </div>
@@ -133,7 +159,7 @@
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" value="">
+                                <input type="email" class="form-control" id="email" placeholder="Email" readonly value= <?php echo $email; ?>>
                             </div>
                         </div>
                     </div>
