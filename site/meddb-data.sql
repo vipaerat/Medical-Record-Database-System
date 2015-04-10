@@ -14,3 +14,6 @@ insert into Employee values('ranjana@iitrpr.ac.in','123-A','Mohali','Punjab',123
 
 insert into Faculty values ('balwinder@iitrpr.ac.in','Computer Science');
 insert into Faculty values ('ranjana@iitrpr.ac.in','Electrical');
+
+INSERT INTO prescription (id_doc, id_pat, id_pha, time_stamp, description, medical_cert) VALUES ('abc@gmail.com', 'adityaa@iitrpr.ac.in', 'xyz@iitrpr.ac.in', '2015-01-08 04:05:06', 'Need break from coding', NULL);
+INSERT INTO prescription (id_doc, id_pat, id_pha, time_stamp, description, medical_cert) VALUES ('cdf@gmail.com', 'ankitk@iitrpr.ac.in', 'xyz@iitrpr.ac.in', '2014-01-09 09:06:10', 'High CGPA stress', NULL);
