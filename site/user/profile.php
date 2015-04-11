@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../connection.php');
+include('../config.php');
 
 $email = $_SESSION['email'];
 

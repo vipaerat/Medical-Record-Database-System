@@ -1,7 +1,26 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];
+
+if(isset($_SESSION['email'])&&isset($_SESSION['type']))
+{
+
+  $email = $_SESSION['email'];
+  $type = $_SESSION['type'];
+  
+  // $name = $_SESSION['name'];
+
+  // Function to validate type and email
+}
+else
+{
+  unset($_SESSION['token']);
+  unset($_SESSION['email']);
+  unset($_SESSION['type']);
+  header("Location: ../index.php");
+
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,12 +37,46 @@ $name = $_SESSION['name'];
       <link href="../css/custom.css" rel="stylesheet">
       <!-- Custom Fonts -->
       <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <!-- jQuery -->
+      <script src="../js/jquery.js"></script>
+      <!-- Bootstrap Core JavaScript -->
+      <script src="../js/bootstrap.min.js"></script>
       <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
       <![endif]-->
+
+      <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+    </style>
+    <script type="text/javascript">
+      $(document).on('change', '.btn-file :file', function() {
+      var input = $(this),
+          numFiles = input.get(0).files ? input.get(0).files.length : 1,
+          label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+      input.trigger('fileselect', [numFiles, label]);
+      });
+    </script>
    </head>
    <body>
       <!-- Navigation -->
@@ -54,7 +107,7 @@ $name = $_SESSION['name'];
                      <a href="prescribe.html">Prescribe</a>
                   </li>
                   <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $email; ?> <b class="caret"></b></a>
+                     <a href="#" class="dropdown-toggle" id="username" data-toggle="dropdown"><?php echo $email; ?> <b class="caret"></b></a>
                      <ul class="dropdown-menu">
                         <li>
                            <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
@@ -98,80 +151,10 @@ $name = $_SESSION['name'];
                    <div class="row">
                       <div class="panel-body">
                          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                               <div class="panel-heading" role="tab" id="headingOne">
-                                  <h4 class="panel-title">
-                                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                     Prescription #1
-                                     </a>
-                                  </h4>
-                               </div>
-                               <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                  <div class="panel-body">
-                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                  </div>
-                               </div>
-                            </div>
-                            <div class="panel panel-default">
-                               <div class="panel-heading" role="tab" id="headingTwo">
-                                  <h4 class="panel-title">
-                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                     Prescription #2
-                                     </a>
-                                  </h4>
-                               </div>
-                               <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                  <div class="panel-body">
-                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                  </div>
-                               </div>
-                            </div>
-                            <div class="panel panel-default">
-                               <div class="panel-heading" role="tab" id="headingThree">
-                                  <h4 class="panel-title">
-                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                     Prescription #3
-                                     </a>
-                                  </h4>
-                               </div>
-                               <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                  <div class="panel-body">
-                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                  </div>
-                               </div>
-                            </div>
-                            <div class="panel panel-default">
-                               <div class="panel-heading" role="tab" id="headingFour">
-                                  <h4 class="panel-title">
-                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                     Prescription #4
-                                     </a>
-                                  </h4>
-                               </div>
-                               <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-                                  <div class="panel-body">
-                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                  </div>
-                               </div>
-                            </div>
-                            <div class="panel panel-default">
-                               <div class="panel-heading" role="tab" id="headingFive">
-                                  <h4 class="panel-title">
-                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                     Prescription #5
-                                     </a>
-                                  </h4>
-                               </div>
-                               <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-                                  <div class="panel-body">
-                                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                  </div>
-                               </div>
-                            </div>
                          </div>
                       </div>
                       <div class="row">
-                         <button class="btn btn-default col-md-offset-6" style="margin-bottom:1em">Older</button>
+                         <button id="older" class="btn btn-default col-md-offset-6" style="margin-bottom:1em">Older</button>
                       </div>
                    </div>
                 </div>
@@ -190,10 +173,56 @@ $name = $_SESSION['name'];
         </div>
       </div>
       <!-- /.container -->
-      <!-- jQuery -->
-      <script src="../js/jquery.js"></script>
-      <!-- Bootstrap Core JavaScript -->
-      <script src="../js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+      // Fetch prescriptions from database
+      window.onload=function(){
+          window.count = 2;
+          window.email = <?php echo "'$email'"?>;
+          fetchPres(window.email,window.count);
+      }
+
+      function fetchPres(id,num)
+      {
+        $.post("prescriptions.php",
+          {
+              email : id,
+              num_row: num  // num of rows to show
+          }).done(function(data){
+              if(data.indexOf("ERROR")!=-1)
+              {
+                  alert(data);
+              }
+              else{
+              $("#accordion").empty().append(data);
+              document.getElementById("upload").onclick = function()
+              {
+                document.getElementById('filelabel').innerHTML = 'gotit';
+                alert('uploading');
+              }
+
+              $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+
+                var div = this.parentNode.parentNode;
+
+                for(var i =0;i<div.childNodes.length;i++)
+                  {
+                    type = typeof div.childNodes[i].id;
+
+                    if(type!="undefined"&&div.childNodes[i].id=="filelabel")
+                      div.childNodes[i].innerHTML=label;
+                  }
+                });
+              }
+          });
+      }
+
+      document.getElementById("older").onclick = function()
+      {
+        window.count=window.count+2;
+        fetchPres(window.email,window.count);
+      }
+
+      </script>
       <!-- Script to Activate the Carousel -->
    </body>
 </html>
