@@ -5,7 +5,7 @@ include('../config.php');
 $email = $_SESSION['email'];
 
 $patientInfoQuery =<<<EOF
-SELECT name,gender,date_of_birth
+SELECT name,gender,age(current_date,date_of_birth)
 FROM patient
 WHERE id_pat = '$email'
 EOF;
@@ -18,6 +18,100 @@ $name = $row[0];
 $gender = $row[1];
 $date_of_birth = $row[2];
 
+$patientTypeQuery =<<<EOF
+SELECT (CASE 
+WHEN (exists (select * from student where id_std = '$email' )) THEN 'student'
+WHEN (exists (select * from employee where id_emp = '$email' )) THEN 'employee'
+WHEN (exists (select * from dependent where id_dep = '$email' )) THEN 'dependant'
+ELSE 'none'
+END)
+EOF;
+
+$res = pg_query($db, $patientTypeQuery);
+$row = pg_fetch_row($res);
+
+$patientType = $row[0];
+
+//echo $patientType;
+
+
+if ($patientType=='student'){
+        $studentQuery = <<<EOF
+        SELECT room_no,hostel_name 
+        FROM student
+        WHERE id_std = '$email'
+EOF;
+
+        $res = pg_query($db, $studentQuery);
+        $row = pg_fetch_row($res);
+
+        $address = "Room No. ".$row[0].", ".$row[1]." Hostel, Indian Institute of Technology Ropar, Nangal Road, Rupnagar, Punjab, INDIA 140001";
+
+
+        $phoneQuery = <<<EOF
+        SELECT phone_no 
+        FROM std_phone
+        WHERE id_std = '$email'
+EOF;
+        
+        $res = pg_query($db, $phoneQuery);
+        $row = pg_fetch_row($res);
+
+        $phone_number = $row[0];
+
+}
+
+else if ($patientType=='employee'){
+        $employeeQuery = <<<EOF
+        SELECT house_no,  city,  state,  pin_code
+        FROM employee
+        WHERE id_emp = '$email'
+EOF;
+
+        $res = pg_query($db, $employeeQuery);
+        $row = pg_fetch_row($res);
+
+        $address = "House No. ".$row[0].", ".$row[1].", ".$row[2].", Pincode: ".$row[3];
+
+        
+
+        $phoneQuery = <<<EOF
+        SELECT phone_no 
+        FROM emp_phone
+        WHERE id_emp = '$email'
+EOF;
+        
+        $res = pg_query($db, $phoneQuery);
+        $row = pg_fetch_row($res);
+
+        $phone_number = $row[0];
+        
+}
+
+else if ($patientType=='dependant'){
+        $dependantQuery = <<<EOF
+        SELECT house_no,  city,  state,  pin_code
+        FROM employee
+        WHERE id_emp = (SELECT id_fac FROM depends_on WHERE id_dep = '$email')
+EOF;
+
+        $res = pg_query($db, $dependantQuery);
+        $row = pg_fetch_row($res);
+
+        $address = "House No. ".$row[0].", ".$row[1].", ".$row[2].", Pincode: ".$row[3];
+
+        $phoneQuery = <<<EOF
+        SELECT phone_no 
+        FROM emp_phone
+        WHERE id_emp = (SELECT id_fac FROM depends_on WHERE id_dep = '$email')
+EOF;
+        
+        $res = pg_query($db, $phoneQuery);
+        $row = pg_fetch_row($res);
+
+        $phone_number = $row[0];
+        
+}
 
 
 ?>
@@ -142,7 +236,7 @@ $date_of_birth = $row[2];
                         <div class="controls">
                             <label class="control-label col-md-3">Age:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" value="">
+                                <input type="text" class="form-control" style="width:100px;" id="age" value= <?php echo $date_of_birth; ?> >
                             </div>
                         </div>
                     </div>
@@ -151,7 +245,7 @@ $date_of_birth = $row[2];
                         <div class="controls">
                             <label class="control-label col-md-3">Phone Number:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" value="">
+                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" value=<?php echo $phone_number; ?>>
                             </div>
                         </div>
                     </div>
@@ -168,7 +262,7 @@ $date_of_birth = $row[2];
                         <div class="controls">
                             <label class="control-label col-md-3">Address:</label>
                             <div class="col-md-9">
-                                <textarea rows="10" cols="50" class="form-control" id="address" maxlength="999" style="resize:none"></textarea>
+                                <textarea rows="10" cols="50" class="form-control" id="address" maxlength="999" style="resize:none"><?php echo $address; ?></textarea>
                             </div>
                         </div>
                     </div>
