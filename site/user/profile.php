@@ -18,6 +18,9 @@ $name = $row[0];
 $gender = $row[1];
 $date_of_birth = $row[2];
 
+$phone_number="";
+$address="";
+
 $patientTypeQuery =<<<EOF
 SELECT (CASE 
 WHEN (exists (select * from student where id_std = '$email' )) THEN 'student'
@@ -31,9 +34,7 @@ $res = pg_query($db, $patientTypeQuery);
 $row = pg_fetch_row($res);
 
 $patientType = $row[0];
-
 //echo $patientType;
-
 
 if ($patientType=='student'){
         $studentQuery = <<<EOF
@@ -214,7 +215,39 @@ EOF;
         <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
         <div class="row">
             <div class="col-md-8">
+                <div class="container" id="initial">
+                    <div class="row">
+                    <div class="col-md-2"><span>Name:</span></div>
+                    <div class="col-md-8"><span><?php echo $name; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-2"><span>Gender:</span></div>
+                    <div class="col-md-8"><span><?php echo $gender; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-2"><span>Age:</span></div>
+                    <div class="col-md-8"><span><?php echo $date_of_birth; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-2"><span>Phone Number:</span></div>
+                    <div class="col-md-8"><span><?php echo $phone_number; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-2"><span>Email:</span></div>
+                    <div class="col-md-8"><span><?php echo $email; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-2"><span>Address:</span></div>
+                    <div class="col-md-6"><span><p><?php echo $address; ?></p></span></div>
+                    </div>
+                </div>
                 <form class="form-horizontal" name="profile" id="profileForm" novalidate>
+                    <fieldset id="editForm" style="display:none;">
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Name:</label>
@@ -267,11 +300,12 @@ EOF;
                         </div>
                     </div>
                     <div id="success"></div>
+                    </fieldset>
                     <!-- For success/fail messages -->
-                    <div class="btn-grp" style="float:right; margin-top:20px;">
-                    <button class="btn btn-primary">Edit</button>
+                    <div class="btn-grp" style="float:left; margin-top:20px;">
+                    <button type="button" class="btn btn-primary" id="edit" onclick="editForm();return false">Edit</button>
                     <button type="submit" class="btn btn-success" disabled>Save</button>
-                </div>
+                    </div>
                 </form>
             </div>
             <div class="col-md-4">
@@ -296,17 +330,20 @@ EOF;
 
     </div>
     <!-- /.container -->
-
+    <script type="text/javascript">
+    function editForm(){
+        alert("onclick");
+        document.getElementById("initial").style.display="none";
+        document.getElementById("editForm").style.display="true";
+        document.getElementById("edit").setAttribute("disabled","disabled");
+        document.getElementById("edit").removeAttr("disabled");
+    }
+    </script>
     <!-- jQuery -->
     <script src="../js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="../js/bootstrap.min.js"></script>
-
-    <!-- Contact Form JavaScript -->
-    <!-- Do not edit these files! In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
-    <script src="js/jqBootstrapValidation.js"></script>
-    <script src="js/contact_me.js"></script>
 
 </body>
 

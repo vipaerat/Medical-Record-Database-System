@@ -63,10 +63,10 @@ $name = $_SESSION['name'];
                         <a href="schedule.php">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $email; ?> <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $email; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
+                                <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
                             </li>
                             <li>
                                 <a href="logout.php" ><i class="fa fa-fw fa-sign-out"></i>Signout</a>

@@ -16,7 +16,7 @@ field varchar(30) not null,
 house_no varchar(50) ,
 city varchar(15),
 state varchar(15),
-pin_code int,
+pin_code numeric(6,0),
 joining_date date not null
 
 );
@@ -29,7 +29,7 @@ qualification varchar(30) not null,
 house_no varchar(50) ,
 city varchar(30),
 state varchar(30),
-pin_code int,
+pin_code numeric(6,0),
 joining_date date not null
 );
 
@@ -44,7 +44,7 @@ gaurdian_phone varchar(15) not null,
 house_no varchar(50) ,
 city varchar(15),
 state varchar(15),
-pin_code int,
+pin_code numeric(6,0),
 foreign key (id_std) references Patient(id_pat) on delete cascade on update cascade
 
 );
@@ -54,7 +54,7 @@ id_emp varchar(30) primary key,
 house_no varchar(50) ,
 city varchar(15),
 state varchar(15),
-pin_code int,
+pin_code numeric(6,0),
 foreign key (id_emp) references Patient(id_pat) on delete cascade on update cascade
 
 
