@@ -214,8 +214,8 @@ EOF;
         <!-- Contact Form -->
         <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
         <div class="row">
-            <div class="col-md-8">
-                <div class="container" id="initial">
+            <div class="col-md-8"> 
+                <div class="container" id="initial" >
                     <div class="row">
                     <div class="col-md-2"><span>Name:</span></div>
                     <div class="col-md-8"><span><?php echo $name; ?></span></div>
@@ -246,6 +246,7 @@ EOF;
                     <div class="col-md-6"><span><p><?php echo $address; ?></p></span></div>
                     </div>
                 </div>
+
                 <form class="form-horizontal" name="profile" id="profileForm" novalidate>
                     <fieldset id="editForm" style="display:none;">
                     <div class="control-group form-group">
@@ -303,8 +304,8 @@ EOF;
                     </fieldset>
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:left; margin-top:20px;">
-                    <button type="button" class="btn btn-primary" id="edit" onclick="editForm();return false">Edit</button>
-                    <button type="submit" class="btn btn-success" disabled>Save</button>
+                    <button class="btn btn-primary" id="edit" onclick="editFormFucntion(); return false;">Edit</button>
+                    <button type="submit" class="btn btn-success" id="save" disabled>Save</button>
                     </div>
                 </form>
             </div>
@@ -331,12 +332,15 @@ EOF;
     </div>
     <!-- /.container -->
     <script type="text/javascript">
-    function editForm(){
-        alert("onclick");
-        document.getElementById("initial").style.display="none";
-        document.getElementById("editForm").style.display="true";
-        document.getElementById("edit").setAttribute("disabled","disabled");
-        document.getElementById("edit").removeAttr("disabled");
+    function editFormFucntion(){
+       
+       document.getElementById("initial").style.display="none";
+       document.getElementById("editForm").removeAttribute("style");
+       document.getElementById("save").removeAttribute("disabled");
+       document.getElementById("edit").setAttribute("disabled","disabled");
+       // document.getElementById("editForm").style.display="true";
+    //document.getElementById("edit").setAttribute("disabled","disabled");
+    // document.getElementById("edit").removeAttr("disabled");
     }
     </script>
     <!-- jQuery -->
