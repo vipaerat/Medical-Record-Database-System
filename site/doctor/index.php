@@ -1,25 +1,25 @@
 <?php
 session_start();
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];  //Google profile name of user
+$type = $_SESSION['type'];
 
-if(isset($_SESSION['email'])&&isset($_SESSION['type']))
+if(isset($email) && isset($name) && isset($type))
 {
-
-  $email = $_SESSION['email'];
-  $type = $_SESSION['type'];
-  
-  // $name = $_SESSION['name'];
-
-  // Function to validate type and email
+  include('../verify.php');
+  if($res==0)
+  {
+    session_destroy();
+    header('Location: ../index.php');
+  }
+  else
+    $username = $res[0]; //Database name of user
 }
 else
 {
-  unset($_SESSION['token']);
-  unset($_SESSION['email']);
-  unset($_SESSION['type']);
-  header("Location: ../index.php");
-
+  session_destroy();
+  header('Location: ../index.php');
 }
-
 
 ?>
 <!DOCTYPE html>
@@ -107,7 +107,7 @@ else
                      <a href="prescribe.html">Prescribe</a>
                   </li>
                   <li class="dropdown">
-                     <a href="#" class="dropdown-toggle" id="username" data-toggle="dropdown"><?php echo $email; ?> <b class="caret"></b></a>
+                     <a href="#" class="dropdown-toggle" id="username" data-toggle="dropdown"><?php echo $username; ?> <b class="caret"></b></a>
                      <ul class="dropdown-menu">
                         <li>
                            <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>

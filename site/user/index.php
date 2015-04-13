@@ -2,6 +2,24 @@
 session_start();
 $email = $_SESSION['email'];
 $name = $_SESSION['name'];
+$type = $_SESSION['type'];
+
+if(isset($email) && isset($name) && isset($type))
+{
+  include('../verify.php');
+  if($res==0)
+  {
+    session_destroy();
+    header('Location: ../index.php');
+  }
+  else
+    $username = $res[0];
+}
+else
+{
+  session_destroy();
+  header('Location: ../index.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,7 +81,7 @@ $name = $_SESSION['name'];
                         <a href="schedule.php">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $email; ?><b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>

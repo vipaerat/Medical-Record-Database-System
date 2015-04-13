@@ -68,7 +68,7 @@ insert into prescription (id_doc, id_pat, id_pha, time_stamp, description, medic
 insert into prescription values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', '2013-01-09 09:06:10', 'Good night sleep', NULL);
 insert into prescription values ('vipina82@gmail.com', 'rachitar@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2015-01-09 09:06:10', 'Hello World!', NULL);
 insert into prescription values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', '2014-02-09 09:06:10', 'Steady flow', NULL);
-insert into prescription values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2014-01-10 09:06:10', 'Beta testing', NULL);
-insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2015-04-11','Star Wars',null);
-insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','anshumany@iitrpr.ac.in','2015-03-12','Game of Thrones',null);
-insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2014-12-31','Remove 5 teeth',null);
+insert into prescription values ('vipina82@gmail.com', 'adityaa@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2014-01-10 09:06:10', 'Beta testing', NULL);
+insert into Prescription values ('agams@iitrpr.ac.in','vipina@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2015-04-11','Star Wars',null);
+insert into Prescription values ('agams@iitrpr.ac.in','adityaa@iitrpr.ac.in','anshumany@iitrpr.ac.in','2015-03-12','Game of Thrones',null);
+insert into Prescription values ('agams@iitrpr.ac.in','balwinder@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2014-12-31','Remove 5 teeth',null);

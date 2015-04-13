@@ -14,8 +14,8 @@
 		$numr = $_POST['num_row'];
 
 		// echo "Opened database successfully\n\n\n";
-		$result = pg_prepare($db,"prescriptions",'SELECT * FROM Prescription WHERE id_doc=$1;');
-		$result = pg_execute($db, "prescriptions",array($email));
+		$result = pg_prepare($db,"prescriptions",'SELECT * FROM Prescription;');
+		$result = pg_execute($db, "prescriptions");
 
 		$arr = pg_fetch_all($result);
 		$num_rows = pg_num_rows($result);

@@ -1,40 +1,45 @@
-<html>
-<body>
-	<?php 
-		$c=1;
-		error_reporting(E_ALL);
-		if (isset($_POST["email"]) && isset($_POST["password"])) {
-			// echo "true";
-			$email=$_POST["email"];
-			$pass=$_POST["password"];
-			$conn_string = "host=localhost port=5432 dbname=test user=postgres password=postgres";
-			$dbconn = pg_connect($conn_string) or die ("Could not connect".pg_last_error());
-			$sql1="select id_std,password from student";
-			//$sql2="select password from student";
-			$result1=pg_query($dbconn,$sql1);
-			//$result2=pg_query($dbconn,$sql2);
-			$arr1=pg_fetch_all($result1);
-			//$arr2=pg_fetch_all($result2);
-			//print_r($arr1);
-			for ($i=0; $i< sizeof($arr1); $i++) { 
-				if ($arr1[$i]["password"]==$pass && $arr1[$i]["id_std"]==$email) {
-					$c=0;
-				}
-
-			}
+<?php
+include('../config.php');
+	if(isset($email) && isset($type) ){
+	if(!$db){
+	echo "Error : Unable to open database\n";
+	} 
+	else
+	{
 		
-			if ($c==1) {
-				echo "No such password combination found";
-				header("Location:verify.html");
-				exit();
-			} else {
-				echo "Verified";
-			}
-			
+		if(strcmp($type, "user")==0)
+		  {
+		  	$query = "SELECT name from Patient WHERE id_pat = '$email' ";
+		  }
+		  elseif (strcmp($type,"doctor")==0) {
+			$query = "SELECT name from Doctor WHERE id_doc = '$email' "; 
+		  }
+		  elseif (strcmp($type,"pharmacist")==0) {
+			$query = "SELECT name from Pharmacist WHERE id_pha = '$email' "; 
+		  }
+		
+		// echo $query;
+		// pg_send_query($db, $query);
+		
+  //   	$result = pg_get_result($db);
+		  $result = pg_query($db, $query);
 
 
-		}	
+		if(pg_result_error($result))
+			echo pg_result_error($result);
+		else
+		{
+			if(pg_num_rows($result)==0)
+				$res=0;
+			else
+				$res=pg_fetch_row($result);
+		}
+	// echo "Opened database successfully\n";
+	}
 
-	?>
-</body>
-</html>
+	pg_close($db);
+	}
+	else{
+	  	header('Location: index.php');
+	}
+?>
