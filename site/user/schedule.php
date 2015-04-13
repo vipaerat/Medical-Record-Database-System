@@ -1,3 +1,26 @@
+<?php
+session_start();
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];  //Google profile name of user
+$type = $_SESSION['type'];
+
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+{
+  include('../verify.php');
+  if($res==0)
+  {
+    session_destroy();
+    header('Location: ../index.php');
+  }
+  else
+    $username = $res[0]; //Database name of user
+}
+else
+{
+  session_destroy();
+  header('Location: ../index.php');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,7 +65,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="../index.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
+                <a href="logout.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -51,19 +74,19 @@
                         <a href="index.php">Home</a>
                     </li>
                     <li>
-                        <a href="profile.html">Profile</a>
+                        <a href="profile.php">Profile</a>
                     </li>
                     <li  class="active">
-                        <a href="schedule.html">Schedule</a>
+                        <a href="schedule.php">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
+                                <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
                             </li>
                             <li>
-                                <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                                <a href="logout.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                             </li>
                         </ul>
                     </li>

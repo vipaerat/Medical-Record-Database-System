@@ -1,5 +1,27 @@
 <?php
-	if(isset($_POST['email'])&isset($_POST['num_row']))
+	session_start();
+	$email = $_SESSION['email'];
+	$name = $_SESSION['name'];  //Google profile name of user
+	$type = $_SESSION['type'];
+
+	if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
+	{
+	  include('../verify.php');
+	  if($res==0)
+	  {
+	    session_destroy();
+	    header('Location: ../index.php');
+	  }
+	  else
+	    $username = $res[0]; //Database name of user
+	}
+	else
+	{
+	  session_destroy();
+	  header('Location: ../index.php');
+	}
+
+	if(isset($_POST['email'])&&isset($_POST['num_row']))
 	{
 		include '../config.php';
 
@@ -14,8 +36,7 @@
 		$numr = $_POST['num_row'];
 
 		// echo "Opened database successfully\n\n\n";
-		$result = pg_prepare($db,"prescriptions",'SELECT * FROM Prescription WHERE id_doc=$1;');
-		$result = pg_execute($db, "prescriptions",array($email));
+		$result = pg_query($db,'SELECT * FROM Prescription;');
 
 		$arr = pg_fetch_all($result);
 		$num_rows = pg_num_rows($result);
@@ -33,7 +54,11 @@
 				    <div class='row'>
 				    	<div class='col-md-8'>
 				    		<table class='table'>
-							<tr><td><b>Name:</b></td>
+							<tr><td><b>Patient:</b></td>
+								<td>%s</td></tr>
+							<tr><td><b>Doctor:</b></td>
+								<td>%s</td></tr>
+							<tr><td><b>Pharmacist:</b></td>
 								<td>%s</td></tr>
 							<tr><td><b>Date:</b></td>
 								<td>%s</td></tr>
@@ -72,6 +97,25 @@
 
 		for($row=0;$row<$numr&&$row<$num_rows;$row++)
 		{
+			$id_pat = $arr[$row]['id_pat'];
+			$id_doc = $arr[$row]['id_doc'];
+			$id_pha = $arr[$row]['id_pha'];
+
+			$query = "SELECT name FROM Patient WHERE id_pat = '$id_pat'";
+	  		$res = pg_query($db,$query);
+	  		$res = pg_fetch_row($res);
+	  		$username = $res[0];
+
+	  		$query = "SELECT name FROM Doctor WHERE id_doc = '$id_doc'";
+	  		$res = pg_query($db,$query);
+	  		$res = pg_fetch_row($res);
+	  		$doc = $res[0];
+
+	  		$query = "SELECT name FROM Pharmacist WHERE id_pha = '$id_pha'";
+	  		$res = pg_query($db,$query);
+	  		$res = pg_fetch_row($res);
+	  		$pha = $res[0];
+
 			if($arr[$row]['medical_cert']!=null)
 				{
 					$base64 = 'data:image/jpeg;base64,' . base64_encode(pg_unescape_bytea($arr[$row]['medical_cert']));
@@ -81,15 +125,17 @@
 				$base64="None";
 
 			if($row==0)
+			{
 		  		$text = $text.sprintf($body,$row+1,'',$row+1,'true',$row+1,$row+1,$row+1,'in',$row+1,
-		  			$arr[$row]['id_pat'],date($format, strtotime($arr[$row]['time_stamp'])),$arr[$row]['description'],
-		  			$base64,
-		  			$arr[$row]['id_doc'],$arr[$row]['id_pha'],$arr[$row]['id_pat'],$arr[$row]['time_stamp']);
+		  			$username,$doc,$pha,date($format, strtotime($arr[$row]['time_stamp'])),$arr[$row]['description'],
+		  			$base64,$id_doc,$id_pha,$id_pat,$arr[$row]['time_stamp']);
+		  	}
 		  	else
+		  	{
 		  		$text = $text.sprintf($body,$row+1,'class="collapsed"',$row+1,'false',$row+1,$row+1,$row+1,'',$row+1,
-		  			$arr[$row]['id_pat'],date($format, strtotime($arr[$row]['time_stamp'])),$arr[$row]['description'],
-		  			$base64,
-		  			$arr[$row]['id_doc'],$arr[$row]['id_pha'],$arr[$row]['id_pat'],$arr[$row]['time_stamp']);
+		  			$username,$doc,$pha,date($format, strtotime($arr[$row]['time_stamp'])),$arr[$row]['description'],
+		  			$base64,$id_doc,$id_pha,$id_pat,$arr[$row]['time_stamp']);
+			}
 		}
 
 		echo $text;

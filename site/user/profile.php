@@ -1,8 +1,27 @@
 <?php
 session_start();
-include('../config.php');
-
 $email = $_SESSION['email'];
+$name = $_SESSION['name'];  //Google profile name of user
+$type = $_SESSION['type'];
+
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+{
+  include('../verify.php');
+  if($res==0)
+  {
+    session_destroy();
+    header('Location: ../index.php');
+  }
+  else
+    $username = $res[0]; //Database name of user
+}
+else
+{
+  session_destroy();
+  header('Location: ../index.php');
+}
+
+include('../config.php');
 
 $patientInfoQuery =<<<EOF
 SELECT name,gender,age(current_date,date_of_birth)
@@ -163,7 +182,7 @@ EOF;
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="../index.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
+                <a href="logout.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -172,19 +191,19 @@ EOF;
                         <a href="index.php">Home</a>
                     </li>
                     <li class="active">
-                        <a href="profile.html">Profile</a>
+                        <a href="profile.php">Profile</a>
                     </li>
                     <li>
-                        <a href="schedule.html">Schedule</a>
+                        <a href="schedule.php">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $email; ?> <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
+                                <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
                             </li>
                             <li>
-                                <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                                <a href="logout.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                             </li>
                         </ul>
                     </li>
@@ -217,32 +236,32 @@ EOF;
             <div class="col-md-8"> 
                 <div class="container" id="initial" >
                     <div class="row">
-                    <div class="col-md-2"><span>Name:</span></div>
+                    <div class="col-md-2"><span><b>Name:</b></span></div>
                     <div class="col-md-8"><span><?php echo $name; ?></span></div>
                     </div>
                     <br>
                     <div class="row">
-                    <div class="col-md-2"><span>Gender:</span></div>
+                    <div class="col-md-2"><span><b>Gender:</b></span></div>
                     <div class="col-md-8"><span><?php echo $gender; ?></span></div>
                     </div>
                     <br>
                     <div class="row">
-                    <div class="col-md-2"><span>Age:</span></div>
-                    <div class="col-md-8"><span><?php echo $date_of_birth; ?></span></div>
+                    <div class="col-md-2"><span><b>Age:</b></span></div>
+                    <div class="col-md-8"><span><?php echo substr($date_of_birth, 0,2); ?></span></div>
                     </div>
                     <br>
                     <div class="row">
-                    <div class="col-md-2"><span>Phone Number:</span></div>
+                    <div class="col-md-2"><span><b>Phone Number:</b></span></div>
                     <div class="col-md-8"><span><?php echo $phone_number; ?></span></div>
                     </div>
                     <br>
                     <div class="row">
-                    <div class="col-md-2"><span>Email:</span></div>
+                    <div class="col-md-2"><span><b>Email:</b></span></div>
                     <div class="col-md-8"><span><?php echo $email; ?></span></div>
                     </div>
                     <br>
                     <div class="row">
-                    <div class="col-md-2"><span>Address:</span></div>
+                    <div class="col-md-2"><span><b>Address:</b></span></div>
                     <div class="col-md-6"><span><p><?php echo $address; ?></p></span></div>
                     </div>
                 </div>
@@ -262,7 +281,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Gender:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" value= <?php echo $gender; ?>>
+                                <input type="text" class="form-control" style="width:100px;" id="age" value= "<?php echo $gender; ?>">
                             </div>
                         </div>
                     </div>
@@ -270,7 +289,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Age:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" value= <?php echo $date_of_birth; ?> >
+                                <input type="text" class="form-control" style="width:100px;" id="age" value= "<?php echo substr($date_of_birth, 0,2); ?>" >
                             </div>
                         </div>
                     </div>
@@ -279,7 +298,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Phone Number:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" value=<?php echo $phone_number; ?>>
+                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" value="<?php echo $phone_number; ?>">
                             </div>
                         </div>
                     </div>
@@ -287,7 +306,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" readonly value= <?php echo $email; ?>>
+                                <input type="email" class="form-control" id="email" placeholder="Email" readonly value= "<?php echo $email; ?>">
                             </div>
                         </div>
                     </div>
@@ -303,8 +322,8 @@ EOF;
                     <div id="success"></div>
                     </fieldset>
                     <!-- For success/fail messages -->
-                    <div class="btn-grp" style="float:left; margin-top:20px;">
-                    <button class="btn btn-primary" id="edit" onclick="editFormFucntion(); return false;">Edit</button>
+                    <div class="btn-grp" style="float:right; margin-top:20px;">
+                    <button class="btn btn-primary" id="edit" onclick="editFrm(); return false;">Edit</button>
                     <button type="submit" class="btn btn-success" id="save" disabled>Save</button>
                     </div>
                 </form>
@@ -312,7 +331,7 @@ EOF;
             <div class="col-md-4">
                 <div class="text-center">
                     <img src="../images/pic.gif" class="img-thumbnail pic" width="150" height="180" alt="Thumbnail Image"><br>
-                    <h4>Username</h4>
+                    <h4><?php echo $username; ?></h4>
                 </div>
             </div>
         </div>
@@ -332,15 +351,11 @@ EOF;
     </div>
     <!-- /.container -->
     <script type="text/javascript">
-    function editFormFucntion(){
-       
+    function editFrm(){
        document.getElementById("initial").style.display="none";
        document.getElementById("editForm").removeAttribute("style");
        document.getElementById("save").removeAttribute("disabled");
        document.getElementById("edit").setAttribute("disabled","disabled");
-       // document.getElementById("editForm").style.display="true";
-    //document.getElementById("edit").setAttribute("disabled","disabled");
-    // document.getElementById("edit").removeAttr("disabled");
     }
     </script>
     <!-- jQuery -->

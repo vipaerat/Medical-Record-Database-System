@@ -1,3 +1,27 @@
+<?php
+session_start();
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];  //Google profile name of user
+$type = $_SESSION['type'];
+
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
+{
+  include('../verify.php');
+  if($res==0)
+  {
+    session_destroy();
+    header('Location: ../index.php');
+  }
+  else
+    $username = $res[0]; //Database name of user
+}
+else
+{
+  session_destroy();
+  header('Location: ../index.php');
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,7 +66,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="../index.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
+                <a href="logout.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -51,19 +75,19 @@
                         <a href="index.php">Home</a>
                     </li>
                     <li>
-                        <a href="profile.html">Profile</a>
+                        <a href="profile.php">Profile</a>
                     </li>
                     <li  class="active">
-                        <a href="prescribe.html">Prescribe</a>
+                        <a href="prescribe.php">Prescribe</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
+                                <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
                             </li>
                             <li>
-                                <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                                <a href="logout.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                             </li>
                         </ul>
                     </li>
@@ -153,22 +177,70 @@
                         <div class="col-md-9" id="addmed">
                         <!-- <button class="btn btn-primary" onclick="return addmed();">Add Medicine</button> -->
                             <div class="form-group med-group">
-                            <div class="col-xs-7">
+                            <div class="col-xs-5">
+                                <label class="control-label">Name:</label>
                                 <input type="text" class="form-control" name="option[]" />
                             </div>
-                            <div class="col-xs-4">
-                                <button type="button" class="btn btn-default removeButton">
-                                    <i class="fa fa-minus"></i>
-                                </button>
+                            <div class="col-xs-3">
+                               <div id="incdec">
+                                <label class="control-label">Amt:</label>
+                                <div class="input-group">
+                                <input type="text" class="form-control" value="1" />
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="up(this); return false;" class="btn btn-default">
+                                            <i class="fa fa-plus"></i>
+                                    </button>
+                                    <button type="button" onclick="down(this); return false;" class="btn btn-default">
+                                            <i class="fa fa-minus"></i>
+                                    </button>
+                                </span>
+                                </div>
+                               </div>
                             </div>
+                             <!-- <div class="col-xs-1">
+                               <div id="incdec">
+                                <i class="fa fa-fw fa-plus" id="up"></i>
+                                <i class="fa fa-fw fa-minus" id="down"></i>
+                               </div>
+                            </div> -->
+                            <!-- <div class="col-xs-3" style="margin-top:25px">
+                                <button type="button" class="btn btn-default removeButton">
+                                    Remove
+                                </button>
+                            </div> -->
                             </div>
                             <div class="form-group med-group hide" id="optionTemplate">
-                            <div class="col-xs-7">
+                            <div class="col-xs-5">
+                                <label class="control-label">Name:</label>
                                 <input class="form-control" type="text" name="option[]" />
                             </div>
-                            <div class="col-xs-4">
+                            
+                            <div class="col-xs-3">
+                               <div id="incdec">
+                                <label class="control-label">Amt:</label>
+                                <div class="input-group">
+                                <input type="text" class="form-control" value="1" />
+                                <span class="input-group-btn">
+                                    <button type="button" onclick="up(this); return false;" class="btn btn-default">
+                                            <i class="fa fa-plus"></i>
+                                    </button>
+                                    <button type="button" onclick="down(this); return false;" class="btn btn-default">
+                                            <i class="fa fa-minus"></i>
+                                    </button>
+                                </span>
+                                </div>
+                               </div>
+                            </div>
+
+                             <!-- <div class="col-xs-1">
+                               <div id="incdec">
+                                <i class="fa fa-fw fa-plus" id="up"></i>
+                                <i class="fa fa-fw fa-minus" id="down"></i>
+                               </div>
+                            </div> -->
+                            <div class="col-xs-3" style="margin-top:25px">
                                 <button type="button" class="btn btn-default removeButton">
-                                    <i class="fa fa-minus"></i>
+                                    Remove
                                 </button>
                             </div>
                             </div>
@@ -204,6 +276,25 @@
 
     <!-- jQuery -->
     <script src="../js/jquery.js"></script>
+    <script type="text/JavaScript">
+    
+    function up(elem)
+    {
+        var input = elem.parentNode.parentNode;
+        var val = parseInt(input.childNodes[1].value);
+        input.childNodes[1].value = val+1;   
+    }
+
+    function down(elem)
+    {
+        var input = elem.parentNode.parentNode;
+        var val = parseInt(input.childNodes[1].value);
+        input.childNodes[1].value = (val-1) < 1 ? 1: (val-1);
+         // var value = (parseInt($("#incdec input").val() , 10));
+         // $("#incdec input").val((value-1) < 1 ? 1 :(value -1));
+    } 
+    </script>
+                
     <script type="text/JavaScript">
         $("#addmed").on('click', '.addButton', function() {
             var $template = $('#optionTemplate'),

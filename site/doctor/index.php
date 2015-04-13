@@ -4,7 +4,7 @@ $email = $_SESSION['email'];
 $name = $_SESSION['name'];  //Google profile name of user
 $type = $_SESSION['type'];
 
-if(isset($email) && isset($name) && isset($type))
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
 {
   include('../verify.php');
   if($res==0)
@@ -101,19 +101,19 @@ else
                      <a href="index.php">Home</a>
                   </li>
                   <li>
-                     <a href="profile.html">Profile</a>
+                     <a href="profile.php">Profile</a>
                   </li>
                   <li>
-                     <a href="prescribe.html">Prescribe</a>
+                     <a href="prescribe.php">Prescribe</a>
                   </li>
                   <li class="dropdown">
                      <a href="#" class="dropdown-toggle" id="username" data-toggle="dropdown"><?php echo $username; ?> <b class="caret"></b></a>
                      <ul class="dropdown-menu">
                         <li>
-                           <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
+                           <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
                         </li>
                         <li>
-                           <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                           <a href="logout.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                         </li>
                      </ul>
                   </li>
@@ -154,7 +154,7 @@ else
                          </div>
                       </div>
                       <div class="row">
-                         <button id="older" class="btn btn-default col-md-offset-6" style="margin-bottom:1em">Older</button>
+                         <button id="older" class="btn btn-default col-md-offset-5" style="margin-bottom:1em">Older</button>
                       </div>
                    </div>
                 </div>
@@ -176,7 +176,7 @@ else
       <script type="text/javascript">
       // Fetch prescriptions from database
       window.onload=function(){
-          window.count = 2;
+          window.count = 4;
           window.email = <?php echo "'$email'"?>;
           fetchPres(window.email,window.count);
       }
@@ -197,7 +197,6 @@ else
               document.getElementById("upload").onclick = function()
               {
                 document.getElementById('filelabel').innerHTML = 'gotit';
-                alert('uploading');
               }
 
               $('.btn-file :file').on('fileselect', function(event, numFiles, label) {

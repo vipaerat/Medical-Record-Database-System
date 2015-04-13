@@ -1,4 +1,26 @@
 <?php
+	session_start();
+	$email = $_SESSION['email'];
+	$name = $_SESSION['name'];  //Google profile name of user
+	$type = $_SESSION['type'];
+
+	if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
+	{
+	  include('../verify.php');
+	  if($res==0)
+	  {
+	    session_destroy();
+	    header('Location: ../index.php');
+	  }
+	  else
+	    $username = $res[0]; //Database name of user
+	}
+	else
+	{
+	  session_destroy();
+	  header('Location: ../index.php');
+	}
+
 	if(isset($_POST['id_doc'])){
 		
 	include '../config.php';

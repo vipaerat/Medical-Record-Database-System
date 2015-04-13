@@ -3,8 +3,8 @@ session_start();
 $email = $_SESSION['email'];
 $name = $_SESSION['name'];
 $type = $_SESSION['type'];
-
-if(isset($email) && isset($name) && isset($type))
+echo $type; 
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0 )
 {
   include('../verify.php');
   if($res==0)
@@ -66,7 +66,7 @@ else
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="../index.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
+                <a href="logout.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
