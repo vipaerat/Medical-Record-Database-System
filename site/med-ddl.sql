@@ -1,74 +1,205 @@
-delete from patient;
-delete from student;
-delete from employee;
-delete from faculty;
-delete from employee;
-delete from doctor;
-delete from pharmacist;
-delete from prescription;
-delete from std_phone;
-delete from emp_phone;
-delete from pha_phone;
-delete from doc_phone;
+CREATE TABLE Patient 
+(
+id_pat varchar(30) primary key,
+name varchar(30) not null,
+gender varchar(10) not null,
+date_of_birth date not null,
+check( gender in ('male' ,'female') )
+);
+
+CREATE TABLE Doctor(
+
+id_doc varchar(30) primary key,
+name varchar(30) not null,
+qualification varchar(30) not null,
+field varchar(30) not null,
+house_no varchar(50) ,
+city varchar(15),
+state varchar(15),
+pin_code numeric(6,0),
+joining_date date not null
+
+);
+
+CREATE TABLE Pharmacist(
+
+id_pha varchar(30) primary key,
+name varchar(30) not null,
+qualification varchar(30) not null,
+house_no varchar(50) ,
+city varchar(30),
+state varchar(30),
+pin_code numeric(6,0),
+joining_date date not null
+);
+
+CREATE TABLE Student(
+
+id_std varchar(30) primary key,
+entry_no varchar(15) not null,
+hostel_name varchar(15) not null,
+room_no varchar(10) not null,
+gaurdian_name varchar(30) not null,
+gaurdian_phone varchar(15) not null,
+house_no varchar(50) ,
+city varchar(15),
+state varchar(15),
+pin_code numeric(6,0),
+foreign key (id_std) references Patient(id_pat) on delete cascade on update cascade
+
+);
+CREATE TABLE Employee(
+
+id_emp varchar(30) primary key,
+house_no varchar(50) ,
+city varchar(15),
+state varchar(15),
+pin_code numeric(6,0),
+foreign key (id_emp) references Patient(id_pat) on delete cascade on update cascade
 
 
-insert into Patient values ('adityaa@iitrpr.ac.in', 'Aditya Abhas','male','1994-08-20' );
-insert into Patient values ('balwinder@iitrpr.ac.in', 'Balwinder Sodhi','male','1973-01-26' );
-insert into Patient values ('ranjana@iitrpr.ac.in', 'Ranjana Sodhi','female','1983-01-26' );
-insert into Patient values ('ckn@iitrpr.ac.in', 'C K Narayan','male','1985-03-11' );
-insert into Patient values ('vipina@iitrpr.ac.in','Vipin A','male','1994-01-26');
-insert into Patient values ('gauravku@iitrpr.ac.in','Gaurav Kushwaha','male','1993-01-26');
-insert into Patient values ('rachitar@iitrpr.ac.in','Rachit Arora','male','1993-05-12');
+);
+CREATE TABLE Faculty(
 
-insert into Student(id_std,entry_no,hostel_name,room_no,gaurdian_name,gaurdian_phone,house_no,city,state,pin_code) values
-	('adityaa@iitrpr.ac.in', '2012CSB1002','Mercury-A','307','goodboy','9234567890','112','Patna','Bihar',110100);
+id_fac varchar(30) primary key,
+department varchar(30) not null,
+foreign key (id_fac) references Employee(id_emp) on delete cascade on update cascade
 
-insert into Student values('vipina@iitrpr.ac.in', '2012CSB1038','Mercury-A','306','abcd','9798992823','333','Palakkad','Kerala',678582);
-insert into Student values('gauravku@iitrpr.ac.in', '2012CSB1012','Mercury-A','306','hekki','9345678901','123','Secundrabad','Telgana',101000);
-insert into Student values('rachitar@iitrpr.ac.in', '2012CSB1026','Mercury-A','208','gaurdian','9345678123','408','Gurgaon','Delhi',110100);
+);
+CREATE TABLE Staff(
 
-insert into std_phone(id_std,phone_no) values ('adityaa@iitrpr.ac.in',8288909906);
-insert into std_phone(id_std,phone_no) values ('vipina@iitrpr.ac.in',8288909903);
-insert into std_phone(id_std,phone_no) values ('gauravku@iitrpr.ac.in',8288909911);
-insert into std_phone(id_std,phone_no) values ('rachitar@iitrpr.ac.in',8288909676);
+id_fac varchar(30) primary key,
+position varchar(30) not null,
+foreign key (id_fac) references Employee(id_emp) on delete cascade on update cascade
+
+);
+CREATE TABLE Dependent(
+
+id_dep varchar(30) primary key,
+relation varchar(20) not null
+
+);
+CREATE TABLE Depends_on(
+
+id_dep varchar(30),
+id_fac varchar(30),
+primary key(id_dep,id_fac),
+foreign key(id_fac) references Faculty(id_fac) on delete cascade on update cascade
+);
+CREATE TABLE Prescription(
+id_doc varchar(30),
+id_pat varchar(30),
+id_pha varchar(30),
+time_stamp timestamp,
+description varchar(50),
+medical_cert bytea,
+primary key(id_doc,id_pat,id_pha,time_stamp),
+foreign key (id_doc) references Doctor(id_doc) on delete cascade on update cascade,
+foreign key (id_pat) references Patient(id_pat) on delete cascade on update cascade,
+foreign key (id_pha) references Pharmacist(id_pha) on delete cascade on update cascade
+);
+CREATE TABLE Medicine(
+
+name varchar(30),
+dose int ,
+primary key (name,dose)
+
+);
+CREATE TABLE Suggested_med(
+
+id_doc varchar(30),
+id_pat varchar(30),
+id_pha varchar(30),
+name varchar(30),
+dose int ,
+time_stamp timestamp,
+primary key(id_doc,id_pat,id_pha,name,dose,time_stamp),
+foreign key (id_doc,id_pat,id_pha,time_stamp) references Prescription(id_doc,id_pat,id_pha,time_stamp) on delete cascade on update cascade,
+foreign key (name,dose) references Medicine(name,dose) on delete cascade on update cascade
+
+);
+CREATE TABLE Test_result(
+id_doc varchar(30),
+id_pat varchar(30),
+id_pha varchar(30),
+time_stamp timestamp,
+test_result varchar(50),
+primary key(id_doc,id_pat,id_pha,time_stamp,test_result),
+foreign key(id_doc,id_pat,id_pha,time_stamp) references Prescription(id_doc,id_pat,id_pha,time_stamp) on delete cascade on update cascade
+
+);
+CREATE TABLE Pres_Disease(
+
+id_doc varchar(30),
+id_pat varchar(30),
+id_pha varchar(30),
+time_stamp timestamp,
+disease varchar(30),
+primary key(id_doc,id_pat,id_pha,time_stamp,disease),
+foreign key(id_doc,id_pat,id_pha,time_stamp) references Prescription(id_doc,id_pat,id_pha,time_stamp) on delete cascade on update cascade
+
+);
+CREATE TABLE Med_salts(
+
+name varchar(30),
+dose int ,
+salt varchar(50),
+primary key(name,dose,salt),
+foreign key(name, dose) references Medicine(name, dose) on delete cascade on update cascade
+
+);
+CREATE TABLE Stock(
+
+name varchar(30),
+dose int ,
+expiry_date date,
+quantity int,
+primary key(name,dose,expiry_date),
+foreign key(name, dose) references Medicine(name, dose) on delete cascade on update cascade
 
 
-insert into Employee values('balwinder@iitrpr.ac.in','322','Chandigarh','Punjab',140001);
-insert into Employee values('ranjana@iitrpr.ac.in','123-A','Mohali','Punjab',140001);
-insert into Employee values('ckn@iitrpr.ac.in','308-A','Mohali','Punjab',140001);
+);
+CREATE TABLE Updates(
 
-insert into emp_phone(id_emp,phone_no) values ('balwinder@iitrpr.ac.in',9950322210);
-insert into emp_phone(id_emp,phone_no) values ('ranjana@iitrpr.ac.in',9950322211);
-insert into emp_phone(id_emp,phone_no) values ('ckn@iitrpr.ac.in',9950322267);
+id_pha varchar(30),
+name varchar(30),
+dose int ,
+expiry_date date,
+time_stamp timestamp,
+add_quantity int not null,
+primary key(id_pha,name,dose,expiry_date,time_stamp),
+foreign key(id_pha) references Pharmacist(id_pha) on delete cascade on update cascade,
+foreign key(name, dose,expiry_date) references Stock(name, dose, expiry_date) on delete cascade on update cascade
 
 
-insert into Faculty values ('balwinder@iitrpr.ac.in','Computer Science');
-insert into Faculty values ('ranjana@iitrpr.ac.in','Electrical');
-insert into Faculty values ('ckn@iitrpr.ac.in','Computer Science');
+);
+CREATE TABLE Doc_phone(
 
+id_doc varchar(30),
+phone_no varchar(15),
+primary key(id_doc,phone_no),
+foreign key (id_doc) references Doctor(id_doc) on delete cascade on update cascade
 
-insert into Doctor values ('vipina82@gmail.com','Vipin A','M.B.B.S','Nueroscience','312','Ropar','Punjab','140001','2012-07-26');
-insert into Doctor values ('gauravkushwaha999@gmail.com','Gaurav Kushwaha','B.D.S','Dentist','312','Ropar','Punjab','140001','2012-07-24');
-insert into Doctor values('agams@iitrpr.ac.in', 'Agam Singh Bedi','B.D.S','Homeopathic','312','Ropar','Punjab','140001','2012-07-24');
+);
+CREATE TABLE Emp_phone(
 
-insert into doc_phone(id_doc,phone_no) values ('agams@iitrpr.ac.in',9499221234);
-insert into doc_phone(id_doc,phone_no) values ('vipina82@gmail.com',9499221245);
-insert into doc_phone(id_doc,phone_no) values ('gauravkushwaha999@gmail.com',9499221223);
+id_emp varchar(30),
+phone_no varchar(15),
+primary key(id_emp,phone_no),
+foreign key (id_emp) references Employee(id_emp) on delete cascade on update cascade
+);
+CREATE TABLE Std_phone(
 
-insert into doctor (id_doc, name, qualification, field, house_no, city, state, pin_code, joining_date) values ('abc@gmail.com', 'Abc', 'Mbbs', 'Homeopathic', '5432', 'Ropar', 'Punjab', 140001, '2012-01-18');
-insert into doctor values ('cdf@gmail.com', 'cdf', 'Mbbs', 'Allopathic', '3128', 'Chandigarh', NULL, 130345, '2013-12-23');
+id_std varchar(30),
+phone_no varchar(15),
+primary key(id_std,phone_no),
+foreign key (id_std) references Student(id_std) on delete cascade on update cascade
 
-insert into Pharmacist(id_pha, name, qualification, house_no, city, state, pin_code, joining_date) values ('ankitkhokhar@iitrpr.ac.in','Ankit Khokhar','Pharmacy','234','Ropar','Punjab',140001,'2012-06-23');
-insert into Pharmacist values ('anshumany@iitrpr.ac.in','Anshuman Yadav','B.Pharma','8080', 'Ludhiana', 'Punjab', 120023, '2015-12-12');
+);
+CREATE TABLE Pha_phone(
 
-insert into pha_phone(id_pha,phone_no) values ('ankitkhokhar@iitrpr.ac.in',9569884636);
-insert into pha_phone(id_pha,phone_no) values ('anshumany@iitrpr.ac.in',9569884668);
-
-insert into prescription (id_doc, id_pat, id_pha, time_stamp, description, medical_cert) values ('agams@iitrpr.ac.in', 'adityaa@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2015-01-08 04:05:06', 'Need break from coding', NULL);
-insert into prescription values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', '2013-01-09 09:06:10', 'Good night sleep', NULL);
-insert into prescription values ('vipina82@gmail.com', 'rachitar@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2015-01-09 09:06:10', 'Hello World!', NULL);
-insert into prescription values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', '2014-02-09 09:06:10', 'Steady flow', NULL);
-insert into prescription values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2014-01-10 09:06:10', 'Beta testing', NULL);
-insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2015-04-11','Star Wars',null);
-insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','anshumany@iitrpr.ac.in','2015-03-12','Game of Thrones',null);
-insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2014-12-31','Remove 5 teeth',null);
+id_pha varchar(30),
+phone_no varchar(15),
+primary key(id_pha,phone_no),
+foreign key (id_pha) references Pharmacist(id_pha) on delete cascade on update cascade
+);
