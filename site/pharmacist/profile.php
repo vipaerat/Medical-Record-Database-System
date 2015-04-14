@@ -4,14 +4,13 @@ ob_start();
 $email = $_SESSION['email'];
 $name = $_SESSION['name'];  //Google profile name of user
 $type = $_SESSION['type'];
-$email = 'ankitkhokhar@iitrpr.ac.in';
 
 /*
     If the user is not logged in, redirect him to the home page,
     so that this page cannot be accessed
 */
 
-/*if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
 {
   include('../verify.php');
   if($res==0)
@@ -26,7 +25,7 @@ else
 {
   session_destroy();
   header('Location: ../index.php');
-}*/
+}
 
 include('../config.php');
 
