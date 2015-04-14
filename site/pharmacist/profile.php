@@ -385,7 +385,7 @@ while($phone_no = pg_fetch_row($res))
     <div class="col-md-4">
                 <div class="text-center">
                     <img src="../images/pic.gif" class="img-thumbnail pic" width="150" height="180" alt="Thumbnail Image"><br>
-                    <h4><?php echo $username; ?></h4>
+                    <h4><?php echo $name; ?></h4>
                 </div>
             </div>
         </div>
