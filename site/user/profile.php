@@ -65,7 +65,10 @@ EOF;
         $res = pg_query($db, $studentQuery);
         $row = pg_fetch_row($res);
 
-        $address = "Room No. ".$row[0].", ".$row[1]." Hostel, Indian Institute of Technology Ropar, Nangal Road, Rupnagar, Punjab, INDIA 140001";
+        $room_no = $row[0];
+        $hostel_name = $row[1];
+
+        $address = "Room No. ".$room_no.", ".$hostel_name." Hostel, Indian Institute of Technology Ropar, Nangal Road, Rupnagar, Punjab, INDIA 140001";
 
 
         $phoneQuery = <<<EOF
@@ -91,7 +94,13 @@ EOF;
         $res = pg_query($db, $employeeQuery);
         $row = pg_fetch_row($res);
 
-        $address = "House No. ".$row[0].", ".$row[1].", ".$row[2].", Pincode: ".$row[3];
+
+        $house_no = $row[0];
+        $city = $row[1];
+        $state = $row[2];
+        $pin_code = $row[3];
+
+        $address = "House No. ".$house_no.", ".$city.", ".$state.", Pincode: ".$pin_code;
 
         
 
@@ -118,7 +127,12 @@ EOF;
         $res = pg_query($db, $dependantQuery);
         $row = pg_fetch_row($res);
 
-        $address = "House No. ".$row[0].", ".$row[1].", ".$row[2].", Pincode: ".$row[3];
+        $house_no = $row[0];
+        $city = $row[1];
+        $state = $row[2];
+        $pin_code = $row[3];
+
+        $address = "House No. ".$house_no.", ".$city.", ".$state.", Pincode: ".$pin_code;
 
         $phoneQuery = <<<EOF
         SELECT phone_no 
@@ -229,9 +243,8 @@ EOF;
                 </ol>
             </div>
         </div>
-        <!-- /.row -->
-        <!-- Contact Form -->
-        <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
+       
+        <!-- The Profile details are displayed here -->
         <div class="row">
             <div class="col-md-8"> 
                 <div class="container" id="initial" >
@@ -266,6 +279,8 @@ EOF;
                     </div>
                 </div>
 
+            <!-- Profile Edit form -->
+
                 <form class="form-horizontal" name="profile" id="profileForm" novalidate>
                     <fieldset id="editForm" style="display:none;">
                     <div class="control-group form-group">
@@ -281,7 +296,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Gender:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" value= "<?php echo $gender; ?>">
+                                <input type="text" class="form-control" style="width:100px;" id="gender" value= "<?php echo $gender; ?>">
                             </div>
                         </div>
                     </div>
@@ -293,15 +308,16 @@ EOF;
                             </div>
                         </div>
                     </div>
-                    <!-- required data-validation-required-message="Please enter your phone number." -->
+
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Phone Number:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" value="<?php echo $phone_number; ?>">
+                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" <?php if ($patientType=='dependant') echo 'readonly' ?> value="<?php echo $phone_number; ?>">
                             </div>
                         </div>
                     </div>
+
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
@@ -310,16 +326,123 @@ EOF;
                             </div>
                         </div>
                     </div>
-                    <div id="extras"></div>
-                    <div class="control-group form-group">
+
+                    <?php  
+
+                    if ($patientType=='student'){
+
+                       // room_no,hostel_name
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Room Number:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="room_no" value="'.$room_no.'">
+                            </div>
+                        </div>
+                        </div>';
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Hostel Name:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="hostel_name" value="'.$hostel_name.'">
+                            </div>
+                        </div>
+                        </div>';
+                           
+                    }
+
+                    else if ($patientType=='employee'){
+                        //$house_no, $city, $state, $pin_code
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">House Number:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="house_no" value="'.$house_no.'">
+                            </div>
+                        </div>
+                        </div>';
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">City:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="city" value="'.$city.'">
+                            </div>
+                        </div>
+                        </div>';
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">State:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="state" value="'.$state.'">
+                            </div>
+                        </div>
+                        </div>';  
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Pincode:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" value="'.$pin_code.'">
+                            </div>
+                        </div>
+                        </div>';       
+                    }
+
+                    else if ($patientType=='dependant'){
+                           
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">House Number:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="house_no" readonly value="'.$house_no.'">
+                            </div>
+                        </div>
+                        </div>';
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">City:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="city" readonly value="'.$city.'">
+                            </div>
+                        </div>
+                        </div>';
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">State:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="state" readonly value="'.$state.'">
+                            </div>
+                        </div>
+                        </div>';  
+
+                        echo '<div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Pincode:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" readonly value="'.$pin_code.'">
+                            </div>
+                        </div>
+                        </div>';
+                    }
+
+                   
+                    ?>
+                
+                    <!-- <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Address:</label>
                             <div class="col-md-9">
                                 <textarea rows="10" cols="50" class="form-control" id="address" maxlength="999" style="resize:none"><?php echo $address; ?></textarea>
                             </div>
                         </div>
-                    </div>
-                    <div id="success"></div>
+                    </div> -->
+                    
                     </fieldset>
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
