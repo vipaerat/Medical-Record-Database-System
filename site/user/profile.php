@@ -4,7 +4,7 @@ $email = $_SESSION['email'];
 $name = $_SESSION['name'];  //Google profile name of user
 $type = $_SESSION['type'];
 
-/*if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
 {
   include('../verify.php');
   if($res==0)
@@ -19,26 +19,9 @@ else
 {
   session_destroy();
   header('Location: ../index.php');
-}*/
+}
 
 include('../config.php');
-
-$patientInfoQuery =<<<EOF
-SELECT name,gender,age(current_date,date_of_birth)
-FROM patient
-WHERE id_pat = '$email'
-EOF;
-
-
-$res = pg_query($db, $patientInfoQuery);
-$row = pg_fetch_row($res);
-
-$name = $row[0];
-$gender = $row[1];
-$date_of_birth = $row[2];
-
-$phone_number="";
-$address="";
 
 $patientTypeQuery =<<<EOF
 SELECT (CASE 
@@ -53,6 +36,81 @@ $res = pg_query($db, $patientTypeQuery);
 $row = pg_fetch_row($res);
 
 $patientType = $row[0];
+
+
+if (isset($_POST['save']))
+   {
+
+        $post_name = $_POST['name'];
+        $post_gender =$_POST['gender'];
+        $post_dob = $_POST['dob'];
+        $post_phone_number = $_POST['phone'];
+
+        $UpdatePatientInfoQuery = "UPDATE patient
+        SET name = '$post_name', gender = '$post_gender', date_of_birth = '$post_dob'
+        WHERE id_pat = '$email';";
+
+        $UpdatePhoneQuery = "";
+        $UpdateAddressQuery = "";
+
+        if ($patientType=='student'){
+        
+            $post_room_no = $_POST['room_no'];
+            $post_hostel_name = $_POST['hostel_name'];
+           
+            $UpdateAddressQuery = "UPDATE student
+            SET room_no = '$post_room_no', hostel_name = '$post_hostel_name'
+            WHERE id_std = '$email';";
+
+            //echo $UpdateAddressQuery;
+            //$res = pg_query($db, $UpdateAddressQuery);
+
+        }
+
+        else if ($patientType=='employee'){
+
+            $post_house_no = $_POST['house_no'];
+            $post_city = $_POST['city'];
+            $post_state = $_POST['state'];
+            $post_pin_code = $_POST['pin_code'];
+
+            $UpdateAddressQuery = "UPDATE employee
+            SET house_no = '$post_house_no',  city = '$post_city',  state = '$post_state',  pin_code = '$post_pin_code'
+            WHERE id_emp = '$email';";
+
+            //$res = pg_query($db, $UpdateAddressQuery);
+                               
+        }
+
+        $UpdatePatientInfoQuery = $UpdatePatientInfoQuery.$UpdateAddressQuery.$UpdatePhoneQuery;
+        echo $UpdatePatientInfoQuery;
+
+        $res = pg_query($db, $UpdatePatientInfoQuery);
+
+    
+   } 
+
+
+// Extracting Patient Information from database to display
+
+$patientInfoQuery =<<<EOF
+SELECT name,gender,date_of_birth
+FROM patient
+WHERE id_pat = '$email'
+EOF;
+
+$res = pg_query($db, $patientInfoQuery);
+$row = pg_fetch_row($res);
+
+$name = $row[0];
+$gender = $row[1];
+$date_of_birth = $row[2];
+
+$age = (new DateTime($date_of_birth))->diff(new DateTime('today'))->y;
+
+$phone_number="";
+$address="";
+
 //echo $patientType;
 
 if ($patientType=='student'){
@@ -260,7 +318,7 @@ EOF;
                     <br>
                     <div class="row">
                     <div class="col-md-2"><span><b>Age:</b></span></div>
-                    <div class="col-md-8"><span><?php echo substr($date_of_birth, 0,2); ?></span></div>
+                    <div class="col-md-8"><span><?php echo $age; ?></span></div>
                     </div>
                     <br>
                     <div class="row">
@@ -281,13 +339,13 @@ EOF;
 
             <!-- Profile Edit form -->
 
-                <form class="form-horizontal" name="profile" id="profileForm" novalidate>
+                <form class="form-horizontal" name="profile" id="profileForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method= "POST">
                     <fieldset id="editForm" style="display:none;">
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Name:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="name" value= "<?php echo $name; ?>" >
+                                <input type="text" class="form-control" name="name" value= "<?php echo $name; ?>" >
                             </div>
                             <p class="help-block"></p>
                         </div>
@@ -296,15 +354,15 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Gender:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="gender" value= "<?php echo $gender; ?>">
+                                <input type="text" class="form-control" style="width:100px;" name="gender" value= "<?php echo $gender; ?>">
                             </div>
                         </div>
                     </div>
                     <div class="control-group form-group">
                         <div class="controls">
-                            <label class="control-label col-md-3">Age:</label>
+                            <label class="control-label col-md-3">Date of Birth:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" value= "<?php echo substr($date_of_birth, 0,2); ?>" >
+                                <input type="date" class="form-control"  name="dob" value="<?php echo $date_of_birth; ?>" >
                             </div>
                         </div>
                     </div>
@@ -313,7 +371,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Phone Number:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" <?php if ($patientType=='dependant') echo 'readonly' ?> value="<?php echo $phone_number; ?>">
+                                <input type="tel" class="form-control" style="width:300px;" name="phone" placeholder="Phone" <?php if ($patientType=='dependant') echo 'readonly' ?> value="<?php echo $phone_number; ?>">
                             </div>
                         </div>
                     </div>
@@ -322,7 +380,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" readonly value= "<?php echo $email; ?>">
+                                <input type="email" class="form-control" name="email" placeholder="Email" readonly value= "<?php echo $email; ?>">
                             </div>
                         </div>
                     </div>
@@ -337,7 +395,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Room Number:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="room_no" value="'.$room_no.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="room_no" value="'.$room_no.'">
                             </div>
                         </div>
                         </div>';
@@ -346,7 +404,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Hostel Name:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="hostel_name" value="'.$hostel_name.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="hostel_name" value="'.$hostel_name.'">
                             </div>
                         </div>
                         </div>';
@@ -359,7 +417,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">House Number:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="house_no" value="'.$house_no.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="house_no" value="'.$house_no.'">
                             </div>
                         </div>
                         </div>';
@@ -368,7 +426,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">City:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="city" value="'.$city.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="city" value="'.$city.'">
                             </div>
                         </div>
                         </div>';
@@ -377,7 +435,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">State:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="state" value="'.$state.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="state" value="'.$state.'">
                             </div>
                         </div>
                         </div>';  
@@ -386,7 +444,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Pincode:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" value="'.$pin_code.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="pin_code" value="'.$pin_code.'">
                             </div>
                         </div>
                         </div>';       
@@ -398,7 +456,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">House Number:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="house_no" readonly value="'.$house_no.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="house_no" readonly value="'.$house_no.'">
                             </div>
                         </div>
                         </div>';
@@ -407,7 +465,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">City:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="city" readonly value="'.$city.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="city" readonly value="'.$city.'">
                             </div>
                         </div>
                         </div>';
@@ -416,7 +474,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">State:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="state" readonly value="'.$state.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="state" readonly value="'.$state.'">
                             </div>
                         </div>
                         </div>';  
@@ -425,7 +483,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Pincode:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" readonly value="'.$pin_code.'">
+                                <input type="tel" class="form-control" style="width:300px;" name="pin_code" readonly value="'.$pin_code.'">
                             </div>
                         </div>
                         </div>';
@@ -447,7 +505,7 @@ EOF;
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
                     <button class="btn btn-primary" id="edit" onclick="editFrm(); return false;">Edit</button>
-                    <button type="submit" class="btn btn-success" id="save" disabled>Save</button>
+                    <button type="submit" class="btn btn-success" id="save" name="save" value="save" disabled>Save</button>
                     </div>
                 </form>
             </div>
