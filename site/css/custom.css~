@@ -139,7 +139,7 @@ footer {
     content:"\e080";
 }
 
-.tab {
+.indent {
 text-indent:20px;
 }
 

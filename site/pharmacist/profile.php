@@ -1,3 +1,69 @@
+<?php
+session_start();
+ob_start();
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];  //Google profile name of user
+$type = $_SESSION['type'];
+
+
+/*
+    If the user is not logged in, redirect him to the home page,
+    so that this page cannot be accessed
+*/
+
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+{
+  include('../verify.php');
+  if($res==0)
+  {
+    session_destroy();
+    header('Location: ../index.php');
+  }
+  else
+    $username = $res[0]; //Database name of user
+}
+else
+{
+  session_destroy();
+  header('Location: ../index.php');
+}
+
+include('../config.php');
+
+$pharmacistInfoQuery =<<<EOF
+SELECT name,qualification,house_no,city,state,pin_code,joining_date 
+FROM pharmacist
+WHERE id_pha = '$email'
+EOF;
+
+$res = pg_query($db, $pharmacistInfoQuery);
+$row = pg_fetch_row($res);
+
+$name = $row[0];
+$qualification = $row[1];
+$house_no = $row[2];
+$city = $row[3];
+$state = $row[4];
+$pin_code = $row[5];
+$joining_date = $row[6];
+
+$pharmacistPhoneQuery = <<<EOF
+    SELECT phone_no 
+    FROM pha_phone
+    WHERE id_pha = '$email'
+EOF;
+
+$res = pg_query($db, $pharmacistPhoneQuery);
+
+$i = 0;
+while($phone_no = pg_fetch_row($res))
+{
+    $phone_number[$i] = $phone_no[0];
+    $i = $i + 1;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,14 +85,6 @@
 
     <!-- Custom Fonts -->
     <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
 </head>
 
 <body>
@@ -94,54 +152,25 @@
                 </ol>
             </div>
         </div>
-        <!-- /.row -->
-        <!-- Contact Form -->
-        <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
-        <div class="row">
+        
+        <!-- The Profile details are displayed here -->
+
+
+
+
+<div class="row">
             <div class="col-md-8">
-                <form class="form-horizontal" name="profile" id="profileForm" novalidate>
-					 <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">ID:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="ID" placeholder="ID" value="">
-                            </div>
-                            <p class="help-block"></p>
-                        </div>
+                    <div class="container" id="initial" >
+                     <div class="row">
+                    <div class="col-md-2"><span><b>Name:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $name; ?></span></div>
                     </div>
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Name:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="name" placeholder="Username" value="">
-                            </div>
-                            <p class="help-block"></p>
-                        </div>
+                    <br>
+                     <div class="row">
+                    <div class="col-md-2"><span><b>Qualification:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $qualification; ?></span></div>
                     </div>
-                     <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Qualification:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="qualification" placeholder="Qualification" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Gender:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="Male">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Age:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="20">
-                            </div>
-                        </div>
-                    </div>
+                    <br>
                     <!-- required data-validation-required-message="Please enter your phone number." -->
                    <!-- <div class="control-group form-group">
                         <div class="controls">
@@ -152,14 +181,98 @@
                         </div>
                     </div>
                     -->
+                    <div class="row">
+                    <div class="col-md-2"><span><b>Phone Number:</b></span></div>
+                    <div class="col-md-8"><span><?php
+                     for($i = 0;$i < count($phone_number) ;$i++)
+                     {
+                        echo $phone_number[$i] . "<br/><br/>"; 
+                     }
+                     ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-2"><span><b>Email Address:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $email; ?></span></div>
+                    </div>
+                    <br>
+                       
+                    
+                   <div class="row">
+                    <div class="col-md-2"><span><b>Address:</b></span></div>
+                    </div>  
+                    <br/>
+                    <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2"><span><b>House No.:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $house_no; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2"><span><b>City:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $city; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2"><span><b>State:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $state; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2"><span><b>Pincode:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $pin_code; ?></span></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                    <div class="col-md-2"><span><b>Joining Date:</b></span></div>
+                    <div class="col-md-8"><span><?php echo $joining_date; ?></span></div>
+                    </div>
+                    <br>
+            </div>
+ 
+        <!-- Profile display ends here -->
+
+
+<!-- Profile edit begins here -->
+
+
+        <form class="form-horizontal" name="profile" id="profileForm" novalidate>
+                    <fieldset id="editForm" style="display:none;">
+                        <div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Name:</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="name" value= "<?php echo $name; ?>" >
+                            </div>
+                            <p class="help-block"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Qualification:</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" style="width:100px;" id="gender" value= "<?php echo $qualification; ?>">
+                            </div>
+                        </div>
+                    </div>
+                    
+
+
                     <div class="control-group form-group">
                         <div class="controls">
                         <label class="control-label col-md-3">Phone Number:</label>
                         <div class="col-md-9" id="addnum">
                         <!-- <button class="btn btn-primary" onclick="return addmed();">Add Medicine</button> -->
+                        <?php
+                            for($i = 0;$i < count($phone_number) ;$i++)
+                            {
+                        ?>
                             <div class="form-group num-group">
                                <div class="col-xs-7">
-                                <input type="text" class="form-control" name="option[]" />
+                                <input type="text" value="<?php echo $phone_number[$i]; ?>" class="form-control" name="option[]" />
                                </div>
                                <div class="col-xs-4">
                                   <button type="button" class="btn btn-default removeButton">
@@ -167,6 +280,7 @@
                                   </button>
                                 </div>
                             </div>
+                            <?php } ?>
                             <div class="form-group num-group hide" id="optionTemplate">
                                <div class="col-xs-7">
                                 <input class="form-control" type="text" name="option[]" />
@@ -205,29 +319,18 @@
             $row.remove();
         });
     </script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../js/bootstrap.min.js"></script>
-                    <!---- doo it-->
-                   
-                    <div class="control-group form-group">
+
+
+    <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" value="">
+                                <input type="email" class="form-control" id="email" placeholder="Email" value="<?php echo $email; ?>">
                             </div>
                         </div>
                     </div>
-                    <div id="extras"></div>
-                   <!-- <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Address:</label>
-                            <div class="col-md-9">
-                                <textarea rows="10" cols="50" class="form-control" id="address" maxlength="999" style="resize:none"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    -->
-                   <div class="control-group form-group">
+
+                    <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Address:</label>
                          </div>
@@ -235,58 +338,59 @@
                             
                     <div class="control-group form-group">
                         <div class="controls">
+                            <div class="col-md-1"></div>
                             <label class="control-label col-md-3">House_no:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="">
+                            <div class="col-md-7">
+                                <input type="tel" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="<?php echo $house_no; ?>">
                             </div>
                         </div>
                     </div>
                     <div class="control-group form-group">
-						<div class="controls">
+                        <div class="controls">
+                        <div class="col-md-1"></div>
                             <label class="control-label col-md-3">City:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="city" placeholder="City" value="">
+                            <div class="col-md-7">
+                                <input type="tel" class="form-control" style="width:300px;" id="city" placeholder="City" value="<?php echo $city; ?>">
                             </div>
                          </div>
                     </div>
                     <div class="control-group form-group">
-						<div class="controls">
+                        <div class="controls">
+                        <div class="col-md-1"></div>
                             <label class="control-label col-md-3">State:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="state" placeholder="State" value="">
+                            <div class="col-md-7">
+                                <input type="tel" class="form-control" style="width:300px;" id="state" placeholder="State" value="<?php echo $state; ?>">
                             </div>
                         </div>
                      </div>
                      <div class="control-group form-group">
-						<div class="controls">
-                            <label class="control-label col-md-3">Pin_code</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="">
+                        <div class="controls">
+                        <div class="col-md-1"></div>
+                            <label class="control-label col-md-3">Pincode:</label>
+                            <div class="col-md-7">
+                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="<?php echo $pin_code; ?>">
                             </div>
                          </div>
                       </div> 
-                       
-                    <div id="success"></div>
+                </fieldset>
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
-                    <button class="btn btn-primary">Edit</button>
-                    <button type="submit" class="btn btn-success" disabled>Save</button>
+                    <button class="btn btn-primary" id="edit" onclick="editFrm(); return false;">Edit</button>
+                    <button type="submit" class="btn btn-success" id="save" disabled>Save</button>
                     </div>
                 </form>
-            </div>
-            
-            
-            <div class="col-md-4">
+
+<!-- Profile edit ends here -->
+    </div>
+    <div class="col-md-4">
                 <div class="text-center">
                     <img src="../images/pic.gif" class="img-thumbnail pic" width="150" height="180" alt="Thumbnail Image"><br>
-                    <h4>Username</h4>
+                    <h4><?php echo $username; ?></h4>
                 </div>
             </div>
-        
-        
-        <!-- /.row -->
+        </div>
 
-        <hr>
+         <hr>
 
         <!-- Footer -->
         <footer>
@@ -296,10 +400,18 @@
                 </div>
             </div>
         </footer>
-    </div>
-    </div>
+        </div>
     <!-- /.container -->
 
+    <!-- jQuery -->
+    <script type="text/javascript">
+    function editFrm(){
+       document.getElementById("initial").style.display="none";
+       document.getElementById("editForm").removeAttribute("style");
+       document.getElementById("save").removeAttribute("disabled");
+       document.getElementById("edit").setAttribute("disabled","disabled");
+    }
+    </script>
     <!-- jQuery -->
     <script src="../js/jquery.js"></script>
 
