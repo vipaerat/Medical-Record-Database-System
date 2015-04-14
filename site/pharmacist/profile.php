@@ -4,14 +4,15 @@ ob_start();
 $email = $_SESSION['email'];
 $name = $_SESSION['name'];  //Google profile name of user
 $type = $_SESSION['type'];
-
+error_reporting(E_ALL);
+$email = 'ankitkhokhar@iitrpr.ac.in';
 
 /*
     If the user is not logged in, redirect him to the home page,
     so that this page cannot be accessed
 */
 
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+/*if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
 {
   include('../verify.php');
   if($res==0)
@@ -26,9 +27,94 @@ else
 {
   session_destroy();
   header('Location: ../index.php');
-}
+}*/
 
 include('../config.php');
+
+/*
+    if save button was clicked
+*/
+
+if(isset($_POST['save']))
+{
+    $name = $_POST['name'];
+    $qualification = $_POST['qualification'];
+    $house_no = $_POST['house_no'];
+    $city = $_POST['city'];
+    $state = $_POST['state'];
+    $pin_code = $_POST['pin_code'];
+
+    $pharmacistInfoUpdateQuery = <<<EOF
+        UPDATE pharmacist
+        SET name='$name',
+        qualification='$qualification',
+        house_no='$house_no',
+        city='$city',
+        state='$state',
+        pin_code=$pin_code
+        WHERE id_pha='$email';
+EOF;
+
+echo $pharmacistInfoUpdateQuery;
+
+    $res1 = pg_query($db,$pharmacistInfoUpdateQuery);
+
+    if(!$res1)
+    {
+        $error1 = pg_last_error();
+    }
+    else
+    {
+        $error1 = "";
+    }
+
+    //updating phone
+
+    $phone = $_POST['phone'];
+
+    $query = "DELETE FROM pha_phone WHERE id_pha='$email';";
+
+    echo count($phone);
+
+    for($i = 0;$i < count($phone) - 1; $i++)
+    {
+        echo $phone_no;
+        $phone_no = $phone[$i];
+        if(strlen($phone_no) > 0)
+        {
+            $query = $query . "INSERT INTO pha_phone(id_pha,phone_no) values('$email','$phone_no');";
+        }
+    }
+
+    echo $query;
+
+    $res2 = pg_query($db,$query);
+
+    if(!$res2)
+    {
+        $error2 = pg_last_error();
+    }
+    else
+    {
+        $error2 = "";
+    }
+    
+    if(strlen($error1) == 0 && strlen($error) == 0)
+    {
+        $_SESSION['result'] = "Successfully Updated";
+    }
+    else
+    {
+        $_SESSION['result'] = "ERROR while updating : " . $error1 . "<br/>" . $error2;
+    }
+
+}
+
+
+/*
+    Saving code ends here
+*/
+
 
 $pharmacistInfoQuery =<<<EOF
 SELECT name,qualification,house_no,city,state,pin_code,joining_date 
@@ -239,13 +325,13 @@ while($phone_no = pg_fetch_row($res))
 <!-- Profile edit begins here -->
 
 
-        <form class="form-horizontal" name="profile" id="profileForm" novalidate>
+        <form action="" method="post" class="form-horizontal" name="profile" id="profileForm" novalidate>
                     <fieldset id="editForm" style="display:none;">
                         <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Name:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="name" value= "<?php echo $name; ?>" >
+                                <input type="text" disabled="" name="name" class="form-control" id="name" value= "<?php echo $name; ?>" >
                             </div>
                             <p class="help-block"></p>
                         </div>
@@ -254,7 +340,7 @@ while($phone_no = pg_fetch_row($res))
                         <div class="controls">
                             <label class="control-label col-md-3">Qualification:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="gender" value= "<?php echo $qualification; ?>">
+                                <input type="text" name="qualification" class="form-control" style="width:100px;" id="gender" value= "<?php echo $qualification; ?>">
                             </div>
                         </div>
                     </div>
@@ -272,7 +358,7 @@ while($phone_no = pg_fetch_row($res))
                         ?>
                             <div class="form-group num-group">
                                <div class="col-xs-7">
-                                <input type="text" value="<?php echo $phone_number[$i]; ?>" class="form-control" name="option[]" />
+                                <input type="text" value="<?php echo $phone_number[$i]; ?>" class="form-control" name="phone[]" />
                                </div>
                                <div class="col-xs-4">
                                   <button type="button" class="btn btn-default removeButton">
@@ -283,7 +369,7 @@ while($phone_no = pg_fetch_row($res))
                             <?php } ?>
                             <div class="form-group num-group hide" id="optionTemplate">
                                <div class="col-xs-7">
-                                <input class="form-control" type="text" name="option[]" />
+                                <input class="form-control" type="text" name="phone[]" />
                                </div>
                                <div class="col-xs-4">
                                 <button type="button" class="btn btn-default removeButton">
@@ -325,7 +411,7 @@ while($phone_no = pg_fetch_row($res))
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" value="<?php echo $email; ?>">
+                                <input type="email" disabled="" name="email" class="form-control" id="email" placeholder="Email" value="<?php echo $email; ?>">
                             </div>
                         </div>
                     </div>
@@ -341,7 +427,7 @@ while($phone_no = pg_fetch_row($res))
                             <div class="col-md-1"></div>
                             <label class="control-label col-md-3">House_no:</label>
                             <div class="col-md-7">
-                                <input type="tel" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="<?php echo $house_no; ?>">
+                                <input type="text" name="house_no" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="<?php echo $house_no; ?>">
                             </div>
                         </div>
                     </div>
@@ -350,7 +436,7 @@ while($phone_no = pg_fetch_row($res))
                         <div class="col-md-1"></div>
                             <label class="control-label col-md-3">City:</label>
                             <div class="col-md-7">
-                                <input type="tel" class="form-control" style="width:300px;" id="city" placeholder="City" value="<?php echo $city; ?>">
+                                <input type="text" name="city" class="form-control" style="width:300px;" id="city" placeholder="City" value="<?php echo $city; ?>">
                             </div>
                          </div>
                     </div>
@@ -359,7 +445,7 @@ while($phone_no = pg_fetch_row($res))
                         <div class="col-md-1"></div>
                             <label class="control-label col-md-3">State:</label>
                             <div class="col-md-7">
-                                <input type="tel" class="form-control" style="width:300px;" id="state" placeholder="State" value="<?php echo $state; ?>">
+                                <input type="text" name="state" class="form-control" style="width:300px;" id="state" placeholder="State" value="<?php echo $state; ?>">
                             </div>
                         </div>
                      </div>
@@ -368,7 +454,7 @@ while($phone_no = pg_fetch_row($res))
                         <div class="col-md-1"></div>
                             <label class="control-label col-md-3">Pincode:</label>
                             <div class="col-md-7">
-                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="<?php echo $pin_code; ?>">
+                                <input type="tel" name="pin_code" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="<?php echo $pin_code; ?>">
                             </div>
                          </div>
                       </div> 
@@ -376,7 +462,7 @@ while($phone_no = pg_fetch_row($res))
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
                     <button class="btn btn-primary" id="edit" onclick="editFrm(); return false;">Edit</button>
-                    <button type="submit" class="btn btn-success" id="save" disabled>Save</button>
+                    <button type="submit" class="btn btn-success" id="save" name="save" disabled>Save</button>
                     </div>
                 </form>
 
@@ -389,6 +475,14 @@ while($phone_no = pg_fetch_row($res))
                 </div>
             </div>
         </div>
+        <?php 
+        if(isset($_SESSION['result']) && strlen($_SESSION['result']) > 0)
+        {
+            echo $_SESSION['result'];
+            $_SESSION['result'] = "";
+            unset($_SESSION['result']);
+        }
+        ?>
 
          <hr>
 
