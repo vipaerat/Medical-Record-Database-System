@@ -1,3 +1,59 @@
+<?php
+session_start();
+$email = $_SESSION['email'];
+$name = $_SESSION['name'];  //Google profile name of user
+$type = $_SESSION['type'];
+
+/*if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
+{
+  include('../verify.php');
+  if($res==0)
+  {
+    session_destroy();
+    header('Location: ../index.php');
+  }
+  else
+    $username = $res[0]; //Database name of user
+}
+else
+{
+  session_destroy();
+  header('Location: ../index.php');
+}*/
+
+include('../config.php');
+$docInfoQuery =<<<EOF
+SELECT *
+FROM doctor
+WHERE id_doc = '$email'
+EOF;
+
+
+
+$res = pg_query($db, $docInfoQuery);
+$row = pg_fetch_row($res);
+$name = $row[1];
+$qualification= $row[2];
+$field= $row[3];
+$house_no= $row[4];
+$city= $row[5];
+$state= $row[6];
+$pin_code= $row[7];
+$joining_date= $row[8];
+
+$phone_number="";
+
+$docPhoneQuery =<<<EOF
+SELECT phone_no 
+FROM doc_phone
+WHERE id_doc= '$email'
+EOF;
+
+$res = pg_query($db, $docPhoneQuery);
+$row = pg_fetch_row($res);
+$phone_no= $row[0];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,22 +107,19 @@
                         <a href="index.php">Home</a>
                     </li>
                     <li class="active">
-                        <a href="profile.html">Profile</a>
+                        <a href="profile.php">Profile</a>
                     </li>
                     <li>
-                        <a href="schedule.html">Schedule</a>
-                    </li>
-                    <li>
-                        <a href="add_medicine.php">Add Medicines</a>
+                        <a href="prescribe.php">Prescribe</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
+                                <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
                             </li>
                             <li>
-                                <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                                <a href="logout.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                             </li>
                         </ul>
                     </li>
@@ -81,9 +134,7 @@
     <div class="container">
 
         <!-- Page Heading/Breadcrumbs -->
-        <div class="row">
-			
-			
+        <div class="row">			
             <div class="col-lg-12">
                 <h1 class="page-header">Profile
                 </h1>
@@ -98,22 +149,65 @@
         <!-- Contact Form -->
         <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
         <div class="row">
-            <div class="col-md-8">
-                <form class="form-horizontal" name="profile" id="profileForm" novalidate>
-					 <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">ID:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="ID" placeholder="ID" value="">
-                            </div>
-                            <p class="help-block"></p>
-                        </div>
-                    </div>
+			<div class="col-md-8">
+				<div class="container" id="initial">
+					<div class="row">
+					<div class="col-md-2"><span><b>Name:</b></span></div>
+					<div class="col-md-8"><span><?php echo $name; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>Qualification:</b></span></div>
+					<div class="col-md-8"><span><?php echo $qualification; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>Field:</b></span></div>
+					<div class="col-md-8"><span><?php echo $field; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>Phone Number:</b></span></div>
+					<div class="col-md-8"><span><?php echo $phone_no; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>Email:</b></span></div>
+					<div class="col-md-8"><span><?php echo $email; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>House Number:</b></span></div>
+					<div class="col-md-8"><span><?php echo $house_no; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>City:</b></span></div>
+					<div class="col-md-8"><span><?php echo $city; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>State:</b></span></div>
+					<div class="col-md-8"><span><?php echo $state; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>Pin Code:</b></span></div>
+					<div class="col-md-8"><span><?php echo $pin_code; ?></span></div>
+					</div>
+					<br>
+					<div class="row">
+					<div class="col-md-2"><span><b>Joining Date:</b></span></div>
+					<div class="col-md-6"><span><p><?php echo date("d-m-Y", strtotime($joining_date)); ?></p></span></div>
+			         </div>
+		        </div>
+                <form class="form-horizontal" id="profileForm" novalidate>
+					<fieldset id="editForm" style="display:none">
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Name:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="name" placeholder="Username" value="">
+                                <input type="text" class="form-control" id="name" placeholder="Username" value="<?php echo $name; ?>">
                             </div>
                             <p class="help-block"></p>
                         </div>
@@ -122,36 +216,18 @@
                         <div class="controls">
                             <label class="control-label col-md-3">Qualification:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="qualification" placeholder="Qualification" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Gender:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="Male">
+                                <input type="tel" class="form-control" style="width:300px;" id="qualification" placeholder="Qualification" value="<?php echo $qualification;?>">
                             </div>
                         </div>
                     </div>
                     <div class="control-group form-group">
                         <div class="controls">
-                            <label class="control-label col-md-3">Age:</label>
+                            <label class="control-label col-md-3">Field</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="20">
+                                <input type="tel" class="form-control" style="width:300px;" id="field" placeholder="Field" value="<?php echo $field;?>">
                             </div>
                         </div>
                     </div>
-                    <!-- required data-validation-required-message="Please enter your phone number." -->
-                   <!-- <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Phone Number:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" value="">
-                            </div>
-                        </div>
-                    </div>
-                    -->
                     <div class="control-group form-group">
                         <div class="controls">
                         <label class="control-label col-md-3">Phone Number:</label>
@@ -159,13 +235,8 @@
                         <!-- <button class="btn btn-primary" onclick="return addmed();">Add Medicine</button> -->
                             <div class="form-group num-group">
                                <div class="col-xs-7">
-                                <input type="text" class="form-control" name="option[]" />
+                                <input type="text" class="form-control" name="option[]" value="<?php echo $phone_no; ?>"/>
                                </div>
-                               <div class="col-xs-4">
-                                  <button type="button" class="btn btn-default removeButton">
-                                    <i class="fa fa-minus"></i>
-                                  </button>
-                                </div>
                             </div>
                             <div class="form-group num-group hide" id="optionTemplate">
                                <div class="col-xs-7">
@@ -184,9 +255,99 @@
                             </div>
                        </div>
                       </div><!--controls-->
-                    </div><!---control-group-->
-                     <!-- jQuery -->
+                    </div><!---control-group-->                   
+                    <div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Email Address:</label>
+                            <div class="col-md-9">
+                                <input type="email" class="form-control" id="email" placeholder="Email" value="<?php echo $email; ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="extras"></div>
+                   <div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Address:</label>
+                         </div>
+                    </div>
+                    <div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">House No:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="<?php echo $house_no;?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group form-group">
+						<div class="controls">
+                            <label class="control-label col-md-3">City:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="city" placeholder="City" value="<?php echo $city;?>">
+                            </div>
+                         </div>
+                    </div>
+                    <div class="control-group form-group">
+						<div class="controls">
+                            <label class="control-label col-md-3">State:</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="state" placeholder="State" value="<?php echo $state;?>">
+                            </div>
+                        </div>
+                     </div>
+                     <div class="control-group form-group">
+						<div class="controls">
+                            <label class="control-label col-md-3">Pin Code</label>
+                            <div class="col-md-9">
+                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="<?php echo $pin_code;?>">
+                            </div>
+                         </div>
+                      </div> 
+                      
+                      <div class="control-group form-group">
+                        <div class="controls">
+                            <label class="control-label col-md-3">Joining Date:</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="joining_date" placeholder="Joining_Date" value="<?php echo date("d-m-Y", strtotime($joining_date));?>">
+                            </div>
+                            <p class="help-block"></p>
+                        </div>
+                    </div>
+                    <div id="success"></div>
+                    </fieldset>
+                    <!-- For success/fail messages -->
+                    <div class="btn-grp" style="float:right; margin-top:20px;">
+                    <button class="btn btn-primary" id="edit" onclick="editFrm(); return false;">Edit</button>
+                    <button type="submit" class="btn btn-success" id="save" disabled>Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <img src="../images/pic.gif" class="img-thumbnail pic" width="150" height="180" alt="Thumbnail Image"><br>
+                    <h4><?php echo $username; ?></h4>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Medical Database Management System 2014</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    </div>
+    <!-- /.container -->
+    <!-- jQuery -->
     <script src="../js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../js/bootstrap.min.js"></script>
     <script type="text/JavaScript">
         $("#addnum").on('click', '.addButton', function() {
             var $template = $('#optionTemplate'),
@@ -205,111 +366,20 @@
             $row.remove();
         });
     </script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../js/bootstrap.min.js"></script>
-                    <!---- doo it-->
-                   
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Email Address:</label>
-                            <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <div id="extras"></div>
-                   <!-- <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Address:</label>
-                            <div class="col-md-9">
-                                <textarea rows="10" cols="50" class="form-control" id="address" maxlength="999" style="resize:none"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    -->
-                   <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Address:</label>
-                         </div>
-                    </div>
-                            
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">House_no:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="control-group form-group">
-						<div class="controls">
-                            <label class="control-label col-md-3">City:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="city" placeholder="City" value="">
-                            </div>
-                         </div>
-                    </div>
-                    <div class="control-group form-group">
-						<div class="controls">
-                            <label class="control-label col-md-3">State:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="state" placeholder="State" value="">
-                            </div>
-                        </div>
-                     </div>
-                     <div class="control-group form-group">
-						<div class="controls">
-                            <label class="control-label col-md-3">Pin_code</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="">
-                            </div>
-                         </div>
-                      </div> 
-                       
-                    <div id="success"></div>
-                    <!-- For success/fail messages -->
-                    <div class="btn-grp" style="float:right; margin-top:20px;">
-                    <button class="btn btn-primary">Edit</button>
-                    <button type="submit" class="btn btn-success" disabled>Save</button>
-                    </div>
-                </form>
-            </div>
-            
-            
-            <div class="col-md-4">
-                <div class="text-center">
-                    <img src="../images/pic.gif" class="img-thumbnail pic" width="150" height="180" alt="Thumbnail Image"><br>
-                    <h4>Username</h4>
-                </div>
-            </div>
-        
-        
-        <!-- /.row -->
+    <script type="text/javascript">
+    function editFrm(){
+       document.getElementById("initial").style.display="none";
+       document.getElementById("editForm").removeAttribute("style");
+       document.getElementById("save").removeAttribute("disabled");
+       document.getElementById("edit").setAttribute("disabled","disabled");
+    }
+    </script>
 
-        <hr>
-
-        <!-- Footer -->
-        <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; Medical Database Management System 2014</p>
-                </div>
-            </div>
-        </footer>
-    </div>
-    </div>
-    <!-- /.container -->
-
-    <!-- jQuery -->
-    <script src="../js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../js/bootstrap.min.js"></script>
 
     <!-- Contact Form JavaScript -->
     <!-- Do not edit these files! In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
-    <script src="js/jqBootstrapValidation.js"></script>
-    <script src="js/contact_me.js"></script>
+    <!-- <script src="js/jqBootstrapValidation.js"></script>
+    // <script src="js/contact_me.js"></script>-->
 
 </body>
 

@@ -1,0 +1,36 @@
+                          ?column?                          
+------------------------------------------------------------
+ drop table if exists "django_migrations" cascade;
+ drop table if exists "django_content_type" cascade;
+ drop table if exists "auth_group_permissions" cascade;
+ drop table if exists "auth_group" cascade;
+ drop table if exists "auth_user_groups" cascade;
+ drop table if exists "auth_permission" cascade;
+ drop table if exists "auth_user_user_permissions" cascade;
+ drop table if exists "auth_user" cascade;
+ drop table if exists "django_admin_log" cascade;
+ drop table if exists "med_app_patient" cascade;
+ drop table if exists "django_session" cascade;
+ drop table if exists "faculty" cascade;
+ drop table if exists "doctor" cascade;
+ drop table if exists "staff" cascade;
+ drop table if exists "dependent" cascade;
+ drop table if exists "depends_on" cascade;
+ drop table if exists "student" cascade;
+ drop table if exists "employee" cascade;
+ drop table if exists "patient" cascade;
+ drop table if exists "stock" cascade;
+ drop table if exists "updates" cascade;
+ drop table if exists "suggested_med" cascade;
+ drop table if exists "doc_phone" cascade;
+ drop table if exists "test_result" cascade;
+ drop table if exists "prescription" cascade;
+ drop table if exists "pres_disease" cascade;
+ drop table if exists "emp_phone" cascade;
+ drop table if exists "med_salts" cascade;
+ drop table if exists "medicine" cascade;
+ drop table if exists "std_phone" cascade;
+ drop table if exists "pharmacist" cascade;
+ drop table if exists "pha_phone" cascade;
+(32 rows)
+
