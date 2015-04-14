@@ -4,7 +4,6 @@ ob_start();
 $email = $_SESSION['email'];
 $name = $_SESSION['name'];  //Google profile name of user
 $type = $_SESSION['type'];
-error_reporting(E_ALL);
 $email = 'ankitkhokhar@iitrpr.ac.in';
 
 /*
@@ -37,7 +36,6 @@ include('../config.php');
 
 if(isset($_POST['save']))
 {
-    $name = $_POST['name'];
     $qualification = $_POST['qualification'];
     $house_no = $_POST['house_no'];
     $city = $_POST['city'];
@@ -46,16 +44,13 @@ if(isset($_POST['save']))
 
     $pharmacistInfoUpdateQuery = <<<EOF
         UPDATE pharmacist
-        SET name='$name',
-        qualification='$qualification',
+        SET qualification='$qualification',
         house_no='$house_no',
         city='$city',
         state='$state',
         pin_code=$pin_code
         WHERE id_pha='$email';
 EOF;
-
-echo $pharmacistInfoUpdateQuery;
 
     $res1 = pg_query($db,$pharmacistInfoUpdateQuery);
 
@@ -74,19 +69,14 @@ echo $pharmacistInfoUpdateQuery;
 
     $query = "DELETE FROM pha_phone WHERE id_pha='$email';";
 
-    echo count($phone);
-
     for($i = 0;$i < count($phone) - 1; $i++)
     {
-        echo $phone_no;
         $phone_no = $phone[$i];
         if(strlen($phone_no) > 0)
         {
             $query = $query . "INSERT INTO pha_phone(id_pha,phone_no) values('$email','$phone_no');";
         }
     }
-
-    echo $query;
 
     $res2 = pg_query($db,$query);
 
@@ -455,6 +445,16 @@ while($phone_no = pg_fetch_row($res))
                             <label class="control-label col-md-3">Pincode:</label>
                             <div class="col-md-7">
                                 <input type="tel" name="pin_code" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="<?php echo $pin_code; ?>">
+                            </div>
+                         </div>
+                      </div> 
+                      <br/>
+                      <div class="control-group form-group">
+                        <div class="controls">
+                        <div class="col-md-1"></div>
+                            <label class="control-label col-md-3">Joining Date:</label>
+                            <div class="col-md-7">
+                                <input type="text" name="joining_date" class="form-control" style="width:300px;" id="joining_date" disabled="" placeholder="joining_date" value="<?php echo $joining_date; ?>">
                             </div>
                          </div>
                       </div> 
