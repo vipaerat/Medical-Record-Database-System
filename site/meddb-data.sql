@@ -76,6 +76,12 @@ insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','a
 insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','anshumany@iitrpr.ac.in','2015-03-12','Game of Thrones',null);
 insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2014-12-31','Remove 5 teeth',null);
 
+insert into temp_prescription (id_doc, id_pat,  time_stamp, description, status) values ('agams@iitrpr.ac.in', 'adityaa@iitrpr.ac.in',  '2015-01-08 04:05:06', 'Need break from coding', 0);
+insert into temp_prescription values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in',  '2013-01-09 09:06:10', 'Good night sleep',0);
+insert into temp_prescription values ('vipina82@gmail.com', 'rachitar@iitrpr.ac.in',  '2015-01-09 09:06:10', 'Hello World!', 0);
+insert into temp_prescription values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in',  '2014-02-09 09:06:10', 'Steady flow', 0);
+
+
 insert into schedule(id_doc,schedule_day,start_time,end_time) values('vipina82@gmail.com','Monday','12:00','16:00');
 insert into schedule(id_doc,schedule_day,start_time,end_time) values('vipina82@gmail.com','Tuesday','09:00','13:00');
 insert into schedule(id_doc,schedule_day,start_time,end_time) values('vipina82@gmail.com','Wednesday','14:30','18:30');

@@ -135,7 +135,7 @@ id_doc varchar(30),
 id_pat varchar(30),
 time_stamp timestamp,
 description varchar(50),
-medical_cert bytea,
+status smallint,
 primary key(id_doc,id_pat,time_stamp),
 foreign key (id_doc) references Doctor(id_doc) on delete cascade on update cascade,
 foreign key (id_pat) references Patient(id_pat) on delete cascade on update cascade
