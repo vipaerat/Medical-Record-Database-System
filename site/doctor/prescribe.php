@@ -1,19 +1,20 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];  //Google profile name of user
-$type = $_SESSION['type'];
-
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"doctor")==0 )
 {
+    $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
     header('Location: ../index.php');
   }
   else
-    $username = $res[0]; //Database name of user
+    $username = $res[0];
 }
 else
 {
@@ -81,7 +82,7 @@ else
                         <a href="prescribe.php">Prescribe</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username; ?><b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
@@ -118,56 +119,23 @@ else
         <!-- Intro Content -->
         <div class="row">
             <div class="col-md-8">
-                <form class="form-horizontal" name="profile" id="profileForm">
+                <form class="form-horizontal" name="profile" id="profileForm" method="post" action="temp_prescription.php?doctorid=vipina82@gmail.com">
                     <div class="control-group form-group">
                         <div class="controls">
-                            <label class="control-label col-md-3">ID:</label>
+                            <label class="control-label col-md-3">Patient ID:</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" id="userid" placeholder="UserID" value="">
+                                <input type="email" class="form-control" name="userid" placeholder="UserID" value="">
                             </div>
                             <p class="help-block"></p>
                         </div>
                     </div>
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Name:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="name" placeholder="Username" value="">
-                            </div>
-                            <p class="help-block"></p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Gender:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="gender" readonly value="Male">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Age:</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" style="width:100px;" id="age" readonly value="20">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- required data-validation-required-message="Please enter your phone number." -->
-                    <div class="control-group form-group">
-                        <div class="controls">
-                            <label class="control-label col-md-3">Phone Number:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="phone" placeholder="Phone" value="">
-                            </div>
-                        </div>
-                    </div>
+                                     
                     <div id="extras"></div>
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Description:</label>
                             <div class="col-md-9">
-                                <textarea rows="10" cols="50" class="form-control" id="address" maxlength="999" style="resize:none"></textarea>
+                                <textarea rows="10" cols="50" class="form-control" name="description" maxlength="999" style="resize:none" ></textarea>
                             </div>
                         </div>
                     </div>
@@ -179,13 +147,17 @@ else
                             <div class="form-group med-group">
                             <div class="col-xs-5">
                                 <label class="control-label">Name:</label>
-                                <input type="text" class="form-control" name="option[]" />
+                                <input type="text" class="form-control" name="name[]" />
+                            </div>
+							<div class="col-xs-3">
+                                <label class="control-label">Dose:</label>
+                                <input type="text" class="form-control" name="dose[]" />
                             </div>
                             <div class="col-xs-3">
                                <div id="incdec">
                                 <label class="control-label">Amt:</label>
                                 <div class="input-group">
-                                <input type="text" class="form-control" value="1" />
+                                <input type="text" class="form-control" name="amount[]" value="1" />
                                 <span class="input-group-btn">
                                     <button type="button" onclick="up(this); return false;" class="btn btn-default">
                                             <i class="fa fa-plus"></i>
@@ -212,14 +184,18 @@ else
                             <div class="form-group med-group hide" id="optionTemplate">
                             <div class="col-xs-5">
                                 <label class="control-label">Name:</label>
-                                <input class="form-control" type="text" name="option[]" />
+                                <input class="form-control" type="text" name="name[]" />
                             </div>
-                            
+                            <div class="col-xs-3">
+                                <label class="control-label">Dose:</label>
+                                <input class="form-control" type="text" name="dose[]" />
+                            </div>
+							
                             <div class="col-xs-3">
                                <div id="incdec">
                                 <label class="control-label">Amt:</label>
                                 <div class="input-group">
-                                <input type="text" class="form-control" value="1" />
+                                <input type="text" class="form-control" name="amount[]" value="1" />
                                 <span class="input-group-btn">
                                     <button type="button" onclick="up(this); return false;" class="btn btn-default">
                                             <i class="fa fa-plus"></i>
@@ -255,7 +231,7 @@ else
                     <div id="success"></div>
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
-                        <button class="btn btn-primary">Advise</button>
+                        <input type="submit" class="btn btn-primary" name="submit" value="Advise" > 
                     </div>
                 </form>
             </div>

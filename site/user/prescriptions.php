@@ -1,26 +1,4 @@
 <?php
-	session_start();
-	$email = $_SESSION['email'];
-	$name = $_SESSION['name'];  //Google profile name of user
-	$type = $_SESSION['type'];
-
-	if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
-	{
-	  include('../verify.php');
-	  if($res==0)
-	  {
-	    session_destroy();
-	    header('Location: ../index.php');
-	  }
-	  else
-	    $username = $res[0]; //Database name of user
-	}
-	else
-	{
-	  session_destroy();
-	  header('Location: ../index.php');
-	}
-
 	if(isset($_POST['email'])&&isset($_POST['num_row']))
 	{
 		include '../config.php';
@@ -36,7 +14,7 @@
 		$numr = $_POST['num_row'];
 
 		// echo "Opened database successfully\n\n\n";
-		$result = pg_query($db,"SELECT * FROM Prescription WHERE id_pat = '$email';");
+		$result = pg_query($db,"SELECT * FROM Prescription WHERE id_pat = '$email' ORDER BY time_stamp;");
 
 		$arr = pg_fetch_all($result);
 		$num_rows = pg_num_rows($result);
@@ -44,7 +22,7 @@
 		$body = "<div class=\"panel panel-default\">
 				   <div class=\"panel-heading\" role=\"tab\" id=\"heading%d\">
 				      <h4 class=\"panel-title\">
-				         <a %s data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse%d\" aria-expanded=\"%s\" aria-controls=\"collapse%d\">
+				         <a %s style='text-decoration:none' data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse%d\" aria-expanded=\"%s\" aria-controls=\"collapse%d\">
 				         Prescription #%d
 				         </a>
 				      </h4>
@@ -53,7 +31,7 @@
 				    <div class=\"panel-body\">
 				    <div class='row'>
 				    	<div class='col-md-8'>
-				    		<table class='table'>
+				    		<table class='table table-striped'>
 							<tr><td><b>Patient:</b></td>
 								<td>%s</td></tr>
 							<tr><td><b>Doctor:</b></td>
@@ -64,8 +42,8 @@
 								<td>%s</td></tr>
 							<tr><td><b>Description:</b></td>
 								<td>%s</td></tr>
-							<tr><td><b>Certificate:</b></td>
-							<td>%s</td></tr>
+							<tr><td><b>Attachments:</b></td>
+								<td><ul class='list-inline'>%s</ul></td></tr>
 							</table>
 						</div>
 						<div class='col-md-4'>
@@ -77,13 +55,12 @@
 								<input type='hidden' name='timestamp' value='%s'/>
 								<span class='btn btn-default btn-file'>Browse
 									<input type='file' name='file' id='file'/>
-									<br>
 								</span>
-								<span id='filelabel'></span>
+								<button type='submit' class='btn btn-primary'>Upload Test</button><br><br>
+								<span id='filelabel'>No file selected.</span>
 							</div>
 							<br>
-							<div class='row'>
-								<button type='submit' id='upload' class='btn btn-primary'>Upload</button>
+							<div class='row'><b>Certificate:</b>&nbsp;&nbsp<span>%s</span></div>
 							</div>
 						</form>
 						</div>
@@ -116,25 +93,50 @@
 	  		$res = pg_fetch_row($res);
 	  		$pha = $res[0];
 
+	  		$timestamp = $arr[$row]['time_stamp'];
+	  		$description = $arr[$row]['description'];
+
 			if($arr[$row]['medical_cert']!=null)
-				{
-					$base64 = 'data:image/jpeg;base64,' . base64_encode(pg_unescape_bytea($arr[$row]['medical_cert']));
-					$base64="<img id='medcert' src=$base64 width='30' height='40'></img>";
-				}
+			{
+				$time = explode(" ",$timestamp);
+				$base64 = "./show.php?pat=$id_pat&doc=$id_doc&pha=$id_pha&date=$time[0]&time=$time[1]&type=cert&indx=0";
+				// $base64 = 'data:image/jpeg;base64,' . base64_encode(pg_unescape_bytea($arr[$row]['medical_cert']));
+				$base64="<a id='medcert' target='blank' href=$base64>Get Certificate</a>";
+			}
 			else
 				$base64="None";
 
+			$query = "SELECT test_result FROM Test_result WHERE 
+							id_pat = '$id_pat' and id_doc = '$id_doc' and id_pha = '$id_pha'
+							and time_stamp='$timestamp'";
+	  		
+	  		$res = pg_query($db,$query);
+	  		$numrows = pg_num_rows($res);
+	  		$attach="";
+
+	  		if($numrows==0)
+	  		{
+	  			$attach="None";
+	  		}
+
+	  		for($r=0;$r<$numrows;$r++)
+	  		{
+	  			$time = explode(" ",$timestamp);
+				$att = "./show.php?pat=$id_pat&doc=$id_doc&pha=$id_pha&date=$time[0]&time=$time[1]&type=attc&indx=$r";
+	  			$attach=$attach."<li><a target='blank' href=$att>".($r+1)."</a></li>";
+	  		}
+
 			if($row==0)
 			{
-		  		$text = $text.sprintf($body,$row+1,'',$row+1,'true',$row+1,$row+1,$row+1,'in',$row+1,
-		  			$username,$doc,$pha,date($format, strtotime($arr[$row]['time_stamp'])),$arr[$row]['description'],
-		  			$base64,$id_doc,$id_pha,$id_pat,$arr[$row]['time_stamp']);
+		  		$text = $text.sprintf($body,$row+1,'class="btn-block"',$row+1,'true',$row+1,$row+1,
+		  			$row+1,'in',$row+1,$username,$doc,$pha,date($format, strtotime($timestamp)),
+		  			$description,$attach,$id_doc,$id_pha,$id_pat,$timestamp,$base64);
 		  	}
 		  	else
 		  	{
-		  		$text = $text.sprintf($body,$row+1,'class="collapsed"',$row+1,'false',$row+1,$row+1,$row+1,'',$row+1,
-		  			$username,$doc,$pha,date($format, strtotime($arr[$row]['time_stamp'])),$arr[$row]['description'],
-		  			$base64,$id_doc,$id_pha,$id_pat,$arr[$row]['time_stamp']);
+		  		$text = $text.sprintf($body,$row+1,'class="collapsed btn-block"',$row+1,'false',$row+1,
+		  			$row+1,$row+1,'',$row+1,$username,$doc,$pha,date($format, strtotime($timestamp)),
+		  			$description,$attach,$id_doc,$id_pha,$id_pat,$timestamp,$base64);
 			}
 		}
 

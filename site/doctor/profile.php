@@ -1,19 +1,21 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];  //Google profile name of user
-$type = $_SESSION['type'];
 
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"doctor")==0 )
 {
+    $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
     header('Location: ../index.php');
   }
   else
-    $username = $res[0]; //Database name of user
+    $username = $res[0];
 }
 else
 {
@@ -22,6 +24,36 @@ else
 }
 
 include('../config.php');
+
+$error = "";
+
+if (isset($_POST['save']))
+{
+$post_name = $_POST['name'];
+$post_qualification =$_POST['qualification'];
+$post_field = $_POST['field'];
+$post_house_no = $_POST['house_no'];
+$post_city = $_POST['city'];
+$post_state = $_POST['state'];
+$post_pin_code = $_POST['pin_code'];
+$post_joining_date = $_POST['joining_date'];
+$post_joining_date = date("Y-m-d", strtotime($post_joining_date));
+$UpdateDoctorInfoQuery = "UPDATE doctor
+SET name = '$post_name', qualification = '$post_qualification', field = '$post_field', house_no= '$post_house_no', city= '$post_city', state= '$post_state', pin_code= $post_pin_code, joining_date= '$post_joining_date'
+WHERE id_doc = '$email';";
+$UpdatePhoneQuery = "";
+
+$UpdateDoctorInfoQuery = $UpdateDoctorInfoQuery.$UpdatePhoneQuery;
+// echo $UpdateDoctorInfoQuery;
+// $res = pg_query($db, $UpdateDoctorInfoQuery);
+
+pg_send_query($db, $UpdateDoctorInfoQuery);
+        
+$result = pg_get_result($db);
+if(pg_result_error($result))
+$error = "An Error Occured While Updating....";
+}
+
 $docInfoQuery =<<<EOF
 SELECT *
 FROM doctor
@@ -201,13 +233,13 @@ $phone_no= $row[0];
 					<div class="col-md-6"><span><p><?php echo date("d-m-Y", strtotime($joining_date)); ?></p></span></div>
 			         </div>
 		        </div>
-                <form class="form-horizontal" id="profileForm" novalidate>
+                <form class="form-horizontal" id="profileForm" method="post" action="./profile.php">
 					<fieldset id="editForm" style="display:none">
                     <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Name:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="name" placeholder="Username" value="<?php echo $name; ?>">
+                                <input type="text" class="form-control" name="name" placeholder="Username" value="<?php echo $name; ?>">
                             </div>
                             <p class="help-block"></p>
                         </div>
@@ -216,7 +248,7 @@ $phone_no= $row[0];
                         <div class="controls">
                             <label class="control-label col-md-3">Qualification:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="qualification" placeholder="Qualification" value="<?php echo $qualification;?>">
+                                <input type="tel" class="form-control" style="width:300px;" name="qualification" placeholder="Qualification" value="<?php echo $qualification;?>">
                             </div>
                         </div>
                     </div>
@@ -224,7 +256,7 @@ $phone_no= $row[0];
                         <div class="controls">
                             <label class="control-label col-md-3">Field</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="field" placeholder="Field" value="<?php echo $field;?>">
+                                <input type="tel" class="form-control" style="width:300px;" name="field" placeholder="Field" value="<?php echo $field;?>">
                             </div>
                         </div>
                     </div>
@@ -260,7 +292,7 @@ $phone_no= $row[0];
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
                             <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="Email" value="<?php echo $email; ?>">
+                                <input type="email" class="form-control" name="email" placeholder="Email" value="<?php echo $email; ?>" readonly>
                             </div>
                         </div>
                     </div>
@@ -274,7 +306,7 @@ $phone_no= $row[0];
                         <div class="controls">
                             <label class="control-label col-md-3">House No:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="<?php echo $house_no;?>">
+                                <input type="tel" class="form-control" style="width:300px;" name="house_no" placeholder="House_no" value="<?php echo $house_no;?>">
                             </div>
                         </div>
                     </div>
@@ -282,7 +314,7 @@ $phone_no= $row[0];
 						<div class="controls">
                             <label class="control-label col-md-3">City:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="city" placeholder="City" value="<?php echo $city;?>">
+                                <input type="tel" class="form-control" style="width:300px;" name="city" placeholder="City" value="<?php echo $city;?>">
                             </div>
                          </div>
                     </div>
@@ -290,7 +322,7 @@ $phone_no= $row[0];
 						<div class="controls">
                             <label class="control-label col-md-3">State:</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="state" placeholder="State" value="<?php echo $state;?>">
+                                <input type="tel" class="form-control" style="width:300px;" name="state" placeholder="State" value="<?php echo $state;?>">
                             </div>
                         </div>
                      </div>
@@ -298,7 +330,7 @@ $phone_no= $row[0];
 						<div class="controls">
                             <label class="control-label col-md-3">Pin Code</label>
                             <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" id="pin_code" placeholder="Pin_code" value="<?php echo $pin_code;?>">
+                                <input type="tel" class="form-control" style="width:300px;" name="pin_code" placeholder="Pin_code" value="<?php echo $pin_code;?>">
                             </div>
                          </div>
                       </div> 
@@ -307,17 +339,16 @@ $phone_no= $row[0];
                         <div class="controls">
                             <label class="control-label col-md-3">Joining Date:</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="joining_date" placeholder="Joining_Date" value="<?php echo date("d-m-Y", strtotime($joining_date));?>">
+                                <input type="text" class="form-control" name="joining_date" placeholder="Joining_Date" value="<?php echo date("d-m-Y", strtotime($joining_date));?>">
                             </div>
                             <p class="help-block"></p>
                         </div>
                     </div>
-                    <div id="success"></div>
                     </fieldset>
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
                     <button class="btn btn-primary" id="edit" onclick="editFrm(); return false;">Edit</button>
-                    <button type="submit" class="btn btn-success" id="save" disabled>Save</button>
+                    <button type="submit" class="btn btn-success" id="save" name="save" disabled>Save</button>
                     </div>
                 </form>
             </div>
@@ -329,7 +360,10 @@ $phone_no= $row[0];
             </div>
         </div>
         <!-- /.row -->
-
+        <br>
+        <div class="row">
+            <p class="text-danger text-uppercase"><?php echo $error; ?></p>
+        </div>
         <hr>
 
         <!-- Footer -->

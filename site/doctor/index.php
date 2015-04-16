@@ -1,19 +1,21 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];  //Google profile name of user
-$type = $_SESSION['type'];
 
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"doctor")==0)
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"doctor")==0 )
 {
+  $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+  
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
     header('Location: ../index.php');
   }
   else
-    $username = $res[0]; //Database name of user
+    $username = $res[0];
 }
 else
 {
@@ -152,8 +154,7 @@ else
                       <div class="panel-body">
                          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                          </div>
-                      </div>
-                      <div class="row">
+                         <hr>
                          <button id="older" class="btn btn-default col-md-offset-5" style="margin-bottom:1em">Older</button>
                       </div>
                    </div>
@@ -194,10 +195,10 @@ else
               }
               else{
               $("#accordion").empty().append(data);
-              document.getElementById("upload").onclick = function()
-              {
-                document.getElementById('filelabel').innerHTML = 'gotit';
-              }
+              // document.getElementById("upload").onclick = function()
+              // {
+              //   document.getElementById('filelabel').innerHTML = 'gotit';
+              // }
 
               $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
 

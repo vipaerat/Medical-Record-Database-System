@@ -1,28 +1,38 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];  //Google profile name of user
-$type = $_SESSION['type'];
-
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"user")==0 )
 {
+    $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
     header('Location: ../index.php');
   }
   else
-    $username = $res[0]; //Database name of user
+    $username = $res[0];
 }
 else
 {
   session_destroy();
   header('Location: ../index.php');
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<?php 
+include('../config.php');
+$query=pg_query($db,"SELECT * FROM doctor natural join schedule");
+$docinfo=pg_fetch_all($query);
+
+//print_r($docinfo);
+$num_row=pg_num_rows($query);
+?>
 
 <head>
 
@@ -43,13 +53,6 @@ else
     <!-- Custom Fonts -->
     <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
 </head>
 
 <body>
@@ -65,7 +68,7 @@ else
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="logout.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
+                <a href="../index.php" class="navbar-brand"><p class="brand">MEDICAL RECORDS</p></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -80,7 +83,7 @@ else
                         <a href="schedule.php">Schedule</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <?php echo $username; ?><b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
@@ -106,7 +109,7 @@ else
                 <h1 class="page-header">Schedule
                 </h1>
                 <ol class="breadcrumb">
-                    <li><a href="index.html">Home</a>
+                    <li><a href="index.php">Home</a>
                     </li>
                     <li class="active">Schedule</li>
                 </ol>
@@ -115,166 +118,106 @@ else
         <!-- /.row -->
 
         <!-- Intro Content -->
-        <div class="row">
-            <div class="col-md-6">
-                <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-            </div>
-            <div class="col-md-6">
-                <h2>About Modern Business</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed voluptate nihil eum consectetur similique? Consectetur, quod, incidunt, harum nisi dolores delectus reprehenderit voluptatem perferendis dicta dolorem non blanditiis ex fugiat.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, magni, aperiam vitae illum voluptatum aut sequi impedit non velit ab ea pariatur sint quidem corporis eveniet. Odit, temporibus reprehenderit dolorum!</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, consequuntur, modi mollitia corporis ipsa voluptate corrupti eum ratione ex ea praesentium quibusdam? Aut, in eum facere corrupti necessitatibus perspiciatis quis?</p>
-            </div>
-        </div>
-        <!-- /.row -->
+        <!--<div class="row">
+            <div class="col-md-6">-->
+        <div id="divCategoryDetails">
+                <table  class="table" cellspacing="0" cellpadding="0" class="docTb1" width="100%" style="margin-top:5px;">
+                    <tbody>
+                        <tr>
+                            <th width="27%">Doctor Name</th>
+                            <th width="11%">Field</th>
+                            <th width="10%">Monday</th>
+                            <th width="11%">Tuesday</th>
+                            <th width="10%">Wednesday</th>
+                            <th width="11%">Thursday</th>
+                            <th width="10%">Friday</th>
+                            <th width="10%">Saturday</th>
+                        </tr>
+                        <?php
+                            $arr = array();
+                            $k=0;
+                            for ($i=0; $i<$num_row ; $i++) {
+                                // echo $docinfo[$i]['name'];
+                               if(!(in_array($docinfo[$i]['name'],$arr)))
+                               {
+                                
+                                $name=$docinfo[$i]['name'];
+                                // array_push($arr,$name);
+                                // echo $name;
+                                $arr[$k]=$name;
+                                $k=$k+1;
 
-        <!-- Team Members -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Our Team</h2>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-                    <div class="caption">
-                        <h3>John Smith<br>
-                            <small>Job Title</small>
-                        </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
-                        <ul class="list-inline">
-                            <li><a href="#"><i class="fa fa-2x fa-facebook-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-linkedin-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-twitter-square"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-                    <div class="caption">
-                        <h3>John Smith<br>
-                            <small>Job Title</small>
-                        </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
-                        <ul class="list-inline">
-                            <li><a href="#"><i class="fa fa-2x fa-facebook-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-linkedin-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-twitter-square"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-                    <div class="caption">
-                        <h3>John Smith<br>
-                            <small>Job Title</small>
-                        </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
-                        <ul class="list-inline">
-                            <li><a href="#"><i class="fa fa-2x fa-facebook-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-linkedin-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-twitter-square"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-                    <div class="caption">
-                        <h3>John Smith<br>
-                            <small>Job Title</small>
-                        </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
-                        <ul class="list-inline">
-                            <li><a href="#"><i class="fa fa-2x fa-facebook-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-linkedin-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-twitter-square"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-                    <div class="caption">
-                        <h3>John Smith<br>
-                            <small>Job Title</small>
-                        </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
-                        <ul class="list-inline">
-                            <li><a href="#"><i class="fa fa-2x fa-facebook-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-linkedin-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-twitter-square"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/750x450" alt="">
-                    <div class="caption">
-                        <h3>John Smith<br>
-                            <small>Job Title</small>
-                        </h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste saepe et quisquam nesciunt maxime.</p>
-                        <ul class="list-inline">
-                            <li><a href="#"><i class="fa fa-2x fa-facebook-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-linkedin-square"></i></a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-2x fa-twitter-square"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /.row -->
+                                // print_r($arr);
+                                $mon="-";$tue="-";$wed="-";$thu="-";$fri="-";$sat="-";$sun="-";$mon1="-";$tue1="-";$wed1="-";$thu1="-";$fri1="-";$sat1="-";$sun1="-";
+                                for ($j=0; $j <$num_row; $j++) { 
+                                    // echo $name;
+                                    // echo strcmp($name,$docinfo[$j]['name']);
+                                    // echo $name;
+                                    if(strcmp($name,$docinfo[$j]['name'])==0)
+                                    {
+                                    if($docinfo[$j]['schedule_day']=='Monday')
+                                    {
+                                            $mon1='-'.$docinfo[$j]['end_time'];
+                                            $mon=$docinfo[$j]['start_time'];
+                                            // echo $mon;
+                                    }
+                                    if($docinfo[$j]['schedule_day']=='Tuesday')
+                                    {
+                                        $tue=$docinfo[$j]['start_time'];
+                                        // echo $tue;
+                                        $tue1='-'.$docinfo[$j]['end_time'];
+                                    }
+                                    if($docinfo[$j]['schedule_day']=='Wednesday')
+                                    {
+                                        $wed=$docinfo[$j]['start_time'];
+                                        // echo $wed;
+                                        $wed1='-'.$docinfo[$j]['end_time'];
+                                    }
+                                    if($docinfo[$j]['schedule_day']=='Thursday')
+                                    {
+                                        $thu=$docinfo[$j]['start_time'];
+                                        $thu1='-'.$docinfo[$j]['end_time'];
+                                        //echo $name.$thu;
+                                    }
+                                    if($docinfo[$j]['schedule_day']=='Friday')
+                                    {
+                                        $fri=$docinfo[$j]['start_time'];
+                                        $fri1='-'.$docinfo[$j]['end_time'];
+                                    }
+                                    if($docinfo[$j]['schedule_day']=='Saturday')
+                                    {
+                                        $sat=$docinfo[$j]['start_time'];
+                                        $sat1='-'.$docinfo[$j]['end_time'];
+                                    }
+                                    if($docinfo[$j]['schedule_day']=='Sunday')
+                                    {
+                                        $sun=$docinfo[$j]['start_time'];
+                                        $sun1='-'.$docinfo[$j]['end_time'];
+                                       } 
+                                   }
+                                       // echo $docinfo[$i]['name'].$mon."-".$tue."-".$wed."\n";                                                                         
+                                }
 
-        <!-- Our Customers -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="page-header">Our Customers</h2>
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <img class="img-responsive customer-img" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <img class="img-responsive customer-img" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <img class="img-responsive customer-img" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <img class="img-responsive customer-img" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <img class="img-responsive customer-img" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <img class="img-responsive customer-img" src="http://placehold.it/500x300" alt="">
-            </div>
-        </div>
-        <!-- /.row -->
+                             echo "<tr>";
+                            echo   "<td width=27%>".$docinfo[$i]['name']."</td>";
+                            echo   "<td width=11%>".$docinfo[$i]['field']."</td>";
+                            echo   "<td width=10%>".$mon.$mon1."</td>";
+                            echo   "<td width=11%>".$tue.$tue1."</td>";
+                            echo   "<td width=10%>".$wed.$wed1."</td>";
+                            echo   "<td width=11%>".$thu.$thu1."</td>";
+                            echo   "<td width=10%>".$fri.$fri1."</td>";
+                            echo   "<td width=10%>".$sat.$sat1."</td>";
+                            echo   "<td width=10%>".$sun.$sun1."</td>";
+                              echo  "</tr>";
+                          }
+                    }
+
+                    // print_r($array);
+
+                         ?>
+                    </tbody>
+                </table>
+         </div>
 
         <hr>
 

@@ -1,19 +1,21 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];  //Google profile name of user
-$type = $_SESSION['type'];
 
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"user")==0 )
 {
+  $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
     header('Location: ../index.php');
   }
   else
-    $username = $res[0]; //Database name of user
+    $username = $res[0];
 }
 else
 {
@@ -114,7 +116,7 @@ if (isset($_POST['save']))
         }
 
         $UpdatePatientInfoQuery = $UpdatePatientInfoQuery.$UpdateAddressQuery.$UpdatePhoneQuery;
-        echo $UpdatePatientInfoQuery;
+        // echo $UpdatePatientInfoQuery;
 
         $res = pg_query($db, $UpdatePatientInfoQuery);
 
@@ -143,7 +145,7 @@ $phone_number="";
 $address="";
 
 
-echo $patientType;
+// echo $patientType;
 
 if ($patientType=='student'){
         $studentQuery = <<<EOF

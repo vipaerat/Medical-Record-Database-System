@@ -87,6 +87,15 @@ header.carousel .fill {
     font-size: 15px;
 }
 
+.custom li a
+{
+    font-weight: 500;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 15px;
+    color:#ffffff;
+}
+
+
 .dropdown-menu li a:hover
 {
     background: #cccccc;

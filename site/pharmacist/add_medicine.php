@@ -1,31 +1,28 @@
 <?php
 session_start();
 ob_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];  //Google profile name of user
-$type = $_SESSION['type'];
-
-/*
-    If the user is not logged in, redirect him to the home page,
-    so that this page cannot be accessed
-*/
-
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"pharmacist")==0)
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"pharmacist")==0 )
 {
+  $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
     header('Location: ../index.php');
   }
   else
-    $username = $res[0]; //Database name of user
+    $username = $res[0];
 }
 else
 {
   session_destroy();
   header('Location: ../index.php');
 }
+
 
 include('../config.php');
 
@@ -75,11 +72,6 @@ if(isset($_POST['update']))
     }
     
 }
-
-
-
-
-
 
 ?>
 
@@ -142,22 +134,19 @@ if(isset($_POST['update']))
                         <a href="index.php">Home</a>
                     </li>
                     <li>
-                        <a href="profile.html">Profile</a>
-                    </li>
-                    <li  >
-                        <a href="schedule.html">Schedule</a>
+                        <a href="profile.php">Profile</a>
                     </li>
                     <li class="active">
                         <a href="add_medicine.php">Add Medicines</a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username<b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="profile.html"><i class="fa fa-fw fa-user"></i>Profile</a>
+                                <a href="profile.php"><i class="fa fa-fw fa-user"></i>Profile</a>
                             </li>
                             <li>
-                                <a href="../index.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
+                                <a href="logout.php"><i class="fa fa-fw fa-sign-out"></i>Signout</a>
                             </li>
                         </ul>
                     </li>

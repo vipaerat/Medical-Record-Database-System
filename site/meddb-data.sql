@@ -69,6 +69,54 @@ insert into prescription values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'a
 insert into prescription values ('vipina82@gmail.com', 'rachitar@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2015-01-09 09:06:10', 'Hello World!', NULL);
 insert into prescription values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', '2014-02-09 09:06:10', 'Steady flow', NULL);
 insert into prescription values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2014-01-10 09:06:10', 'Beta testing', NULL);
+insert into prescription values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2015-01-09 09:06:10', 'Hello World!', NULL);
+insert into prescription values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', '2014-02-09 09:06:10', 'Steady flow', NULL);
+insert into prescription values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', '2014-01-10 09:06:10', 'Beta testing', NULL);
 insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2015-04-11','Star Wars',null);
 insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','anshumany@iitrpr.ac.in','2015-03-12','Game of Thrones',null);
 insert into Prescription values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','2014-12-31','Remove 5 teeth',null);
+
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('vipina82@gmail.com','Monday','12:00','16:00');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('vipina82@gmail.com','Tuesday','09:00','13:00');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('vipina82@gmail.com','Wednesday','14:30','18:30');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('vipina82@gmail.com','Thursday','13:30','18:00');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('gauravkushwaha999@gmail.com','Thursday','09:00','11:00');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('gauravkushwaha999@gmail.com','Friday','09:00','13:00');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('gauravkushwaha999@gmail.com','Saturday','14:30','18:30');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('agams@iitrpr.ac.in','Monday','09:00','11:00');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('agams@iitrpr.ac.in','Friday','12:00','16:30');
+insert into schedule(id_doc,schedule_day,start_time,end_time) values('agams@iitrpr.ac.in','Sunday','14:30','18:30');
+
+	-- http://www.hindujahospital.com/for-patients/schedule.aspx
+
+insert into Medicine values ('Crocin', 25);
+insert into Medicine values ('Crocin', 50);
+insert into Medicine values ('Benadryl', 50);
+insert into Medicine values ('Paracetamol',50);
+insert into Medicine values ('Paracetamol',25);
+insert into Medicine values ('Combiflam', 50);
+insert into Medicine values ('Combiflam', 25);
+
+
+insert into Med_salts values ('Crocin', 25, 'chlorine');
+insert into Med_salts values ('Crocin', 50, 'chlorine');
+insert into Med_salts values ('Benadryl', 50, 'sodium');
+insert into Med_salts values ('Paracetamol', 25, 'carbon');
+insert into Med_salts values ('Paracetamol', 50, 'carbon');
+
+
+insert into Suggested_med values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', 'Paracetamol',50 ,6, '2013-01-09 09:06:10');
+insert into Suggested_med values ('vipina82@gmail.com', 'vipina@iitrpr.ac.in', 'ankitkhokhar@iitrpr.ac.in', 'Crocin',25 ,3, '2013-01-09 09:06:10');
+insert into Suggested_med values ('agams@iitrpr.ac.in','gauravku@iitrpr.ac.in','ankitkhokhar@iitrpr.ac.in','Paracetamol',25,9, '2015-04-11');
+insert into Suggested_med values ('vipina82@gmail.com', 'rachitar@iitrpr.ac.in', 'anshumany@iitrpr.ac.in', 'Benadryl',50,1,'2015-01-09 09:06:10');
+insert into Suggested_med values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'anshumany@iitrpr.ac.in','Combiflam',50,3, '2014-01-10 09:06:10');
+insert into Suggested_med values ('vipina82@gmail.com', 'gauravku@iitrpr.ac.in', 'anshumany@iitrpr.ac.in','Paracetamol',50,6, '2014-01-10 09:06:10');
+
+
+insert into Pat_Password values ('adityaa@iitrpr.ac.in',  'meddb');
+insert into Pat_Password values ('balwinder@iitrpr.ac.in', 'meddb');
+insert into Pat_Password values ('ranjana@iitrpr.ac.in',  'meddb');
+insert into Pat_Password values ('ckn@iitrpr.ac.in',  'meddb');
+insert into Pat_Password values ('vipina@iitrpr.ac.in','meddb');
+insert into Pat_Password values ('gauravku@iitrpr.ac.in','meddb');
+insert into Pat_Password values ('rachitar@iitrpr.ac.in','meddb');

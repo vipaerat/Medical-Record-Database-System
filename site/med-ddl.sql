@@ -1,3 +1,32 @@
+DROP TABLE IF EXISTS Patient CASCADE;
+DROP TABLE IF EXISTS Doctor CASCADE;
+DROP TABLE IF EXISTS Pharmacist CASCADE;
+DROP TABLE IF EXISTS Student CASCADE;
+DROP TABLE IF EXISTS Employee CASCADE;
+DROP TABLE IF EXISTS Faculty CASCADE;
+DROP TABLE IF EXISTS Staff CASCADE;
+DROP TABLE IF EXISTS Dependent CASCADE;
+DROP TABLE IF EXISTS Std_phone CASCADE;
+DROP TABLE IF EXISTS Emp_phone CASCADE;
+DROP TABLE IF EXISTS Depends_on CASCADE;
+DROP TABLE IF EXISTS Prescription CASCADE;
+DROP TABLE IF EXISTS Temp_Prescription CASCADE;
+DROP TABLE IF EXISTS Medicine CASCADE;
+DROP TABLE IF EXISTS Suggested_med CASCADE;
+DROP TABLE IF EXISTS Temp_Suggested_med CASCADE;
+DROP TABLE IF EXISTS Pres_Disease CASCADE;
+DROP TABLE IF EXISTS Med_salts CASCADE;
+DROP TABLE IF EXISTS Pha_phone CASCADE;
+DROP TABLE IF EXISTS Doc_phone CASCADE;
+DROP TABLE IF EXISTS Updates CASCADE;
+DROP TABLE IF EXISTS Stock CASCADE;
+DROP TABLE IF EXISTS Schedule CASCADE;
+DROP TABLE IF EXISTS Test_result CASCADE;
+DROP TABLE IF EXISTS Pat_password CASCADE;
+DROP TABLE IF EXISTS Temp_Suggested_med CASCADE;
+DROP TABLE IF EXISTS Temp_Prescription CASCADE;
+DROP TYPE IF EXISTS day CASCADE;
+
 CREATE TABLE Patient 
 (
 id_pat varchar(30) primary key,
@@ -86,6 +115,8 @@ id_fac varchar(30),
 primary key(id_dep,id_fac),
 foreign key(id_fac) references Faculty(id_fac) on delete cascade on update cascade
 );
+
+
 CREATE TABLE Prescription(
 id_doc varchar(30),
 id_pat varchar(30),
@@ -98,6 +129,20 @@ foreign key (id_doc) references Doctor(id_doc) on delete cascade on update casca
 foreign key (id_pat) references Patient(id_pat) on delete cascade on update cascade,
 foreign key (id_pha) references Pharmacist(id_pha) on delete cascade on update cascade
 );
+
+CREATE TABLE Temp_Prescription(
+id_doc varchar(30),
+id_pat varchar(30),
+time_stamp timestamp,
+description varchar(50),
+medical_cert bytea,
+primary key(id_doc,id_pat,time_stamp),
+foreign key (id_doc) references Doctor(id_doc) on delete cascade on update cascade,
+foreign key (id_pat) references Patient(id_pat) on delete cascade on update cascade
+);
+
+
+
 CREATE TABLE Medicine(
 
 name varchar(30),
@@ -105,6 +150,7 @@ dose int ,
 primary key (name,dose)
 
 );
+
 CREATE TABLE Suggested_med(
 
 id_doc varchar(30),
@@ -112,19 +158,37 @@ id_pat varchar(30),
 id_pha varchar(30),
 name varchar(30),
 dose int ,
+quantity int ,
 time_stamp timestamp,
 primary key(id_doc,id_pat,id_pha,name,dose,time_stamp),
 foreign key (id_doc,id_pat,id_pha,time_stamp) references Prescription(id_doc,id_pat,id_pha,time_stamp) on delete cascade on update cascade,
 foreign key (name,dose) references Medicine(name,dose) on delete cascade on update cascade
 
 );
+
+CREATE TABLE Temp_Suggested_med(
+
+id_doc varchar(30),
+id_pat varchar(30),
+name varchar(30),
+dose int ,
+quantity int,
+time_stamp timestamp,
+primary key(id_doc,id_pat,name,dose,time_stamp),
+foreign key (id_doc,id_pat,time_stamp) references Temp_Prescription(id_doc,id_pat,time_stamp) on delete cascade on update cascade,
+foreign key (name,dose) references Medicine(name,dose) on delete cascade on update cascade
+
+);
+
+
 CREATE TABLE Test_result(
+indx serial,
 id_doc varchar(30),
 id_pat varchar(30),
 id_pha varchar(30),
 time_stamp timestamp,
-test_result varchar(50),
-primary key(id_doc,id_pat,id_pha,time_stamp,test_result),
+test_result bytea,
+primary key(id_doc,id_pat,id_pha,time_stamp,indx),
 foreign key(id_doc,id_pat,id_pha,time_stamp) references Prescription(id_doc,id_pat,id_pha,time_stamp) on delete cascade on update cascade
 
 );
@@ -197,9 +261,27 @@ foreign key (id_std) references Student(id_std) on delete cascade on update casc
 
 );
 CREATE TABLE Pha_phone(
-
 id_pha varchar(30),
 phone_no varchar(15),
 primary key(id_pha,phone_no),
 foreign key (id_pha) references Pharmacist(id_pha) on delete cascade on update cascade
+);
+
+CREATE TYPE day AS ENUM ('Sunday','Monday', 'Tuesday', 'Wednesday','Thursday','Friday','Saturday');
+
+CREATE TABLE Schedule(
+id_doc varchar(30),
+schedule_day day,
+start_time time,
+end_time time,
+primary key(id_doc,schedule_day,start_time,end_time),
+foreign key(id_doc) references Doctor(id_doc) on delete cascade on update cascade
+);
+
+CREATE TABLE Pat_Password(
+
+id_pat varchar(30),
+password varchar(15),
+primary key(id_pat),
+foreign key (id_pat) references Patient(id_pat) on delete cascade on update cascade
 );

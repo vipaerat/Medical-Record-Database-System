@@ -1,11 +1,14 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];
-$type = $_SESSION['type'];
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0 )
+
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"user")==0 )
 {
+  $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
@@ -101,7 +104,9 @@ else
                   <li>
                      <a href="profile.php">Profile</a>
                   </li>
-                  
+                  <li>
+                      <a href="schedule.php">Schedule</a>
+                  </li>
                   <li class="dropdown">
                      <a href="#" class="dropdown-toggle" id="username" data-toggle="dropdown"><?php echo $username; ?> <b class="caret"></b></a>
                      <ul class="dropdown-menu">
@@ -148,8 +153,7 @@ else
                       <div class="panel-body">
                          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                          </div>
-                      </div>
-                      <div class="row">
+                         <hr>
                          <button id="older" class="btn btn-default col-md-offset-5" style="margin-bottom:1em">Older</button>
                       </div>
                    </div>
@@ -190,10 +194,6 @@ else
               }
               else{
               $("#accordion").empty().append(data);
-              document.getElementById("upload").onclick = function()
-              {
-                document.getElementById('filelabel').innerHTML = 'gotit';
-              }
 
               $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
 

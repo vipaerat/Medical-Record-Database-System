@@ -9,7 +9,6 @@ function login()
 	$_SESSION['type'] = $_POST['type'];	
 	$client = new Google_Client();
 	$client->setApplicationName("Medical Database System");
-	
 	/* if($type=="user")
 	{
 	$client->setClientId('275140125527-03o3lpg0oqt92u3fldhmn49e2n9ep405.apps.googleusercontent.com');
@@ -33,14 +32,13 @@ function login()
 							 
 	$oauth2 = new Google_Oauth2Service($client);
 	$authUrl = $client->createAuthUrl();
-	echo $authUrl;								 
+	echo $authUrl;						 
 	
    
 }
 
-if(isset($_POST['type']))
+if(isset($_POST['type'])) 
 {
-	
 	login();
 }
 else if(isset($_SESSION['type']))
@@ -111,8 +109,7 @@ else if(isset($_SESSION['type']))
 	// }
 }
 else {
-	
-	header('Location: ../index.php');
+	header('Location: index.php');
 }
 	
 ?> 
