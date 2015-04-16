@@ -62,6 +62,22 @@ if (isset($_POST['save']))
             SET room_no = '$post_room_no', hostel_name = '$post_hostel_name'
             WHERE id_std = '$email';";
 
+
+
+            $phone = $_POST['phone'];
+
+            $query = "DELETE FROM std_phone WHERE id_std='$email';";
+
+            for($i = 0;$i < count($phone) - 1; $i++)
+            {
+                $phone_no = $phone[$i];
+                if(strlen($phone_no) > 0)
+                {
+                    $query = $query . "INSERT INTO std_phone(id_std,phone_no) values('$email','$phone_no');";
+                }
+            }
+
+            $UpdatePhoneQuery = $query;
             //echo $UpdateAddressQuery;
             //$res = pg_query($db, $UpdateAddressQuery);
 
@@ -79,6 +95,21 @@ if (isset($_POST['save']))
             WHERE id_emp = '$email';";
 
             //$res = pg_query($db, $UpdateAddressQuery);
+
+            $phone = $_POST['phone'];
+
+            $query = "DELETE FROM emp_phone WHERE id_emp='$email';";
+
+            for($i = 0;$i < count($phone) - 1; $i++)
+            {
+                $phone_no = $phone[$i];
+                if(strlen($phone_no) > 0)
+                {
+                    $query = $query . "INSERT INTO emp_phone(id_emp,phone_no) values('$email','$phone_no');";
+                }
+            }
+
+            $UpdatePhoneQuery = $query;
                                
         }
 
@@ -111,7 +142,8 @@ $age = (new DateTime($date_of_birth))->diff(new DateTime('today'))->y;
 $phone_number="";
 $address="";
 
-//echo $patientType;
+
+echo $patientType;
 
 if ($patientType=='student'){
         $studentQuery = <<<EOF
@@ -130,15 +162,21 @@ EOF;
 
 
         $phoneQuery = <<<EOF
-        SELECT phone_no 
-        FROM std_phone
-        WHERE id_std = '$email'
+            SELECT phone_no 
+            FROM std_phone
+            WHERE id_std = '$email'
 EOF;
-        
-        $res = pg_query($db, $phoneQuery);
-        $row = pg_fetch_row($res);
 
-        $phone_number = $row[0];
+        $res = pg_query($db, $phoneQuery);
+
+        $i = 0;
+        
+        while($phone_no = pg_fetch_row($res))
+            {
+                $phone_number[$i] = $phone_no[0];
+                $i = $i + 1;
+            }
+
 
 }
 
@@ -160,18 +198,22 @@ EOF;
 
         $address = "House No. ".$house_no.", ".$city.", ".$state.", Pincode: ".$pin_code;
 
-        
 
-        $phoneQuery = <<<EOF
-        SELECT phone_no 
-        FROM emp_phone
-        WHERE id_emp = '$email'
+         $phoneQuery = <<<EOF
+            SELECT phone_no 
+            FROM emp_phone
+            WHERE id_emp = '$email'
 EOF;
-        
-        $res = pg_query($db, $phoneQuery);
-        $row = pg_fetch_row($res);
 
-        $phone_number = $row[0];
+        $res = pg_query($db, $phoneQuery);
+
+        $i = 0;
+        
+        while($phone_no = pg_fetch_row($res))
+            {
+                $phone_number[$i] = $phone_no[0];
+                $i = $i + 1;
+            }
         
 }
 
@@ -192,16 +234,22 @@ EOF;
 
         $address = "House No. ".$house_no.", ".$city.", ".$state.", Pincode: ".$pin_code;
 
+    
         $phoneQuery = <<<EOF
-        SELECT phone_no 
-        FROM emp_phone
-        WHERE id_emp = (SELECT id_fac FROM depends_on WHERE id_dep = '$email')
+            SELECT phone_no 
+            FROM emp_phone
+            WHERE id_emp = (SELECT id_fac FROM depends_on WHERE id_dep = '$email')
 EOF;
-        
-        $res = pg_query($db, $phoneQuery);
-        $row = pg_fetch_row($res);
 
-        $phone_number = $row[0];
+        $res = pg_query($db, $phoneQuery);
+
+        $i = 0;
+        
+        while($phone_no = pg_fetch_row($res))
+            {
+                $phone_number[$i] = $phone_no[0];
+                $i = $i + 1;
+            }
         
 }
 
@@ -323,7 +371,12 @@ EOF;
                     <br>
                     <div class="row">
                     <div class="col-md-2"><span><b>Phone Number:</b></span></div>
-                    <div class="col-md-8"><span><?php echo $phone_number; ?></span></div>
+                    <div class="col-md-8"><span><?php
+                     for($i = 0;$i < count($phone_number) ;$i++)
+                     {
+                        echo $phone_number[$i] . "<br/><br/>"; 
+                     }
+                     ?></span></div>
                     </div>
                     <br>
                     <div class="row">
@@ -367,14 +420,67 @@ EOF;
                         </div>
                     </div>
 
-                    <div class="control-group form-group">
+                           <div class="control-group form-group">
                         <div class="controls">
-                            <label class="control-label col-md-3">Phone Number:</label>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" style="width:300px;" name="phone" placeholder="Phone" <?php if ($patientType=='dependant') echo 'readonly' ?> value="<?php echo $phone_number; ?>">
+                        <label class="control-label col-md-3">Phone Number:</label>
+                        <div class="col-md-9" id="addnum">
+                        <!-- <button class="btn btn-primary" onclick="return addmed();">Add Medicine</button> -->
+                        <?php
+                            for($i = 0;$i < count($phone_number) ;$i++)
+                            {
+                        ?>
+                            <div class="form-group num-group">
+                               <div class="col-xs-7">
+                                <input type="text" <?php if ($patientType=='dependant') echo 'readonly' ?> value="<?php echo $phone_number[$i]; ?>" class="form-control" name="phone[]" />
+                               </div>
+                               <div class="col-xs-4">
+                                  <button type="button" class="btn btn-default removeButton" 
+                                  <?php if ($patientType=='dependant') echo 'style="display: none;"' ?> >
+                                    <i class="fa fa-minus"></i>
+                                  </button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                            <?php } ?>
+                            <div class="form-group num-group hide" id="optionTemplate">
+                               <div class="col-xs-7">
+                                <input class="form-control" type="text" name="phone[]" />
+                               </div>
+                               <div class="col-xs-4">
+                                <button type="button" class="btn btn-default removeButton"
+                                <?php if ($patientType=='dependant') echo 'style="display: none;"' ?> >
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                               </div>
+                            </div>
+                            <div class="row" style="margin-left:2px;">
+                                <button type="button" class="btn btn-default addButton"
+                                <?php if ($patientType=='dependant') echo 'style="display: none;"' ?> >
+                                    <i class="fa fa-plus"></i>&nbsp;Add Phone Number
+                                </button>
+                            </div>
+                       </div>
+                      </div><!--controls-->
+                    </div><!---control-group-->
+                     <!-- jQuery -->
+    <script src="../js/jquery.js"></script>
+    <script type="text/JavaScript">
+        $("#addnum").on('click', '.addButton', function() {
+            var $template = $('#optionTemplate'),
+                $clone    = $template
+                                .clone()
+                                .removeClass('hide')
+                                .removeAttr('id')
+                                .insertBefore($template);
+        })
+
+        // Remove button click handler
+        .on('click', '.removeButton', function() {
+            var $row    = $(this).parents('.num-group');
+
+            // Remove element containing the option
+            $row.remove();
+        });
+    </script>
 
                     <div class="control-group form-group">
                         <div class="controls">
