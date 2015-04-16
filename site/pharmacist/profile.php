@@ -10,7 +10,7 @@ $type = $_SESSION['type'];
     so that this page cannot be accessed
 */
 
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"user")==0)
+if(isset($email) && isset($name) && isset($type) && strcmp($type,"pharmacist")==0)
 {
   include('../verify.php');
   if($res==0)
