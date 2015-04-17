@@ -108,6 +108,9 @@ else
                   <li>
                      <a href="prescribe.php">Prescribe</a>
                   </li>
+                  <li>
+                     <a href="inventory.php">Inventory</a>
+                  </li>
                   <li class="dropdown">
                      <a href="#" class="dropdown-toggle" id="username" data-toggle="dropdown"><?php echo $username; ?> <b class="caret"></b></a>
                      <ul class="dropdown-menu">
@@ -142,13 +145,14 @@ else
                    <div class="row">
                       <div class="col-md-6 col-md-offset-3 searchbox">
                          <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for...">
+                            <input type="text" id="searchtext" class="form-control" placeholder="Search for...">
                             <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                            <button class="btn btn-default" id="search" type="submit"><i class="fa fa-search"></i>&nbsp;Search</button>
                             </span>
                          </div>
                          <!-- /input-group -->
                       </div>
+                      <div class="col-md-3 searchbox"><button class="btn btn-success" id="reload">Reload</button></div>
                    </div>
                    <div class="row">
                       <div class="panel-body">
@@ -177,7 +181,8 @@ else
       <script type="text/javascript">
       // Fetch prescriptions from database
       window.onload=function(){
-          window.count = 4;
+          window.count = 10;
+          window.query="";
           window.email = <?php echo "'$email'"?>;
           fetchPres(window.email,window.count);
       }
@@ -187,7 +192,8 @@ else
         $.post("prescriptions.php",
           {
               email : id,
-              num_row: num  // num of rows to show
+              num_row: num, // num of rows to show
+              query: window.query
           }).done(function(data){
               if(data.indexOf("ERROR")!=-1)
               {
@@ -195,6 +201,18 @@ else
               }
               else{
               $("#accordion").empty().append(data);
+              if(window.openpanel!=null)
+              {
+                // alert(document.getElementById(window.openpanel).id);
+                $("#collapse1").collapse('hide');
+                var id = document.getElementById(window.openpanel).id;
+                id='#'.concat(id);
+                // alert(id);
+                $(id).collapse('show');
+              };
+              // $('.panel-collapse').on('shown.bs.collapse', function (e) {
+              //     window.openpanel=e.currentTarget.id;
+              //   });
               // document.getElementById("upload").onclick = function()
               // {
               //   document.getElementById('filelabel').innerHTML = 'gotit';
@@ -222,6 +240,26 @@ else
         fetchPres(window.email,window.count);
       }
 
+      $("#searchtext").keyup(function(event){
+        if(event.keyCode == 13){
+          $("#search").click();
+          }
+        });
+
+      document.getElementById("search").onclick = function()
+      {
+        var searchtext = document.getElementById("searchtext").value;
+        // alert(searchtext);
+        window.query = searchtext;
+        fetchPres(window.email,10);
+      }
+
+      document.getElementById("reload").onclick = function()
+      {
+        // alert(searchtext);
+        window.query = "";
+        fetchPres(window.email,2);
+      }
       </script>
       <!-- Script to Activate the Carousel -->
    </body>

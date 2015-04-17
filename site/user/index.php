@@ -141,13 +141,14 @@ else
                    <div class="row">
                       <div class="col-md-6 col-md-offset-3 searchbox">
                          <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for...">
+                            <input type="text" id="searchtext" class="form-control" placeholder="Search for...">
                             <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                            <button class="btn btn-default" id="search" type="button"><i class="fa fa-search"></i>&nbsp;Search</button>
                             </span>
                          </div>
                          <!-- /input-group -->
                       </div>
+                      <div class="col-md-3 searchbox"><button class="btn btn-success" id="reload">Reload</button></div>
                    </div>
                    <div class="row">
                       <div class="panel-body">
@@ -177,6 +178,7 @@ else
       // Fetch prescriptions from database
       window.onload=function(){
           window.count = 4;
+          window.query="";
           window.email = <?php echo "'$email'"?>;
           fetchPres(window.email,window.count);
       }
@@ -186,7 +188,8 @@ else
         $.post("prescriptions.php",
           {
               email : id,
-              num_row: num  // num of rows to show
+              num_row: num, // num of rows to show
+              query: window.query
           }).done(function(data){
               if(data.indexOf("ERROR")!=-1)
               {
@@ -217,6 +220,26 @@ else
         fetchPres(window.email,window.count);
       }
 
+      $("#searchtext").keyup(function(event){
+        if(event.keyCode == 13){
+          $("#search").click();
+          }
+        });
+
+      document.getElementById("search").onclick = function()
+      {
+        var searchtext = document.getElementById("searchtext").value;
+        // alert(searchtext);
+        window.query = searchtext;
+        fetchPres(window.email,10);
+      }
+
+      document.getElementById("reload").onclick = function()
+      {
+        // alert(searchtext);
+        window.query = "";
+        fetchPres(window.email,2);
+      }
       </script>
       <!-- Script to Activate the Carousel -->
    </body>

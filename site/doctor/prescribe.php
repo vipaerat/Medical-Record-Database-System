@@ -81,6 +81,9 @@ else
                     <li  class="active">
                         <a href="prescribe.php">Prescribe</a>
                     </li>
+                    <li>
+                     <a href="inventory.php">Inventory</a>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -228,7 +231,6 @@ else
                         </div>
                     </div>
                 </div>
-                    <div id="success"></div>
                     <!-- For success/fail messages -->
                     <div class="btn-grp" style="float:right; margin-top:20px;">
                         <input type="submit" class="btn btn-primary" name="submit" value="Advise" > 
@@ -236,6 +238,15 @@ else
                 </form>
             </div>
         </div>
+        <div class="row col-md-offset-1" id="success"><br>
+            <?php 
+            if(isset($_GET['error']))
+            {
+                $error=$_GET['error'];
+
+                echo strcmp($error,"")==0?"<p class=\"text-primary\">Prescribed Successfully.</p>":"<p class=\"text-danger\">$error</p>";
+            }
+            ?></div>
         <!-- /.row -->
         <hr>
         <!-- Footer -->

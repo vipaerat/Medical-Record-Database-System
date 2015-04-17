@@ -1,11 +1,13 @@
 <?php
 session_start();
-$email = $_SESSION['email'];
-$name = $_SESSION['name'];
-$type = $_SESSION['type'];
-if(isset($email) && isset($name) && isset($type) && strcmp($type,"pharmacist")==0 )
+if(isset($_SESSION['email']) && isset($_SESSION['name']) && isset($_SESSION['type']) && strcmp($_SESSION['type'],"pharmacist")==0 )
 {
+  $email = $_SESSION['email'];
+  $name = $_SESSION['name'];
+  $type = $_SESSION['type'];
+
   include('../verify.php');
+
   if($res==0)
   {
     session_destroy();
@@ -105,7 +107,9 @@ else
                   <li>
                      <a href="add_medicine.php">Add medicine</a>
                   </li>
-                  
+                  <li>
+                      <a href="inventory.php">Inventory</a>
+                  </li>
                   <li class="dropdown">
                      <a href="#" class="dropdown-toggle" id="username" data-toggle="dropdown"><?php echo $username; ?> <b class="caret"></b></a>
                      <ul class="dropdown-menu">
@@ -124,14 +128,14 @@ else
          <!-- /.container -->
       </nav>
       <!-- Page Content -->
-      <div class="container" style="">
+      <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">Home
                 </h1>
             </div>
         </div>
-        <div class="row"  >
+        <div class="row">
             <div class="container col-lg-9  prescription" style="margin-top:0px" >
                 <div class="panel panel-primary">
                    <div class="panel-heading">
@@ -140,13 +144,14 @@ else
                    <div class="row">
                       <div class="col-md-6 col-md-offset-3 searchbox">
                          <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for...">
+                            <input type="text" id="searchtext" class="form-control" placeholder="Search for...">
                             <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                            <button class="btn btn-default" id="search" type="button"><i class="fa fa-search"></i>&nbsp;Search</button>
                             </span>
                          </div>
                          <!-- /input-group -->
                       </div>
+                      <div class="col-md-3 searchbox"><button class="btn btn-success" id="reload">Reload</button></div>
                    </div>
                    <div class="row">
                       <div class="panel-body">
@@ -159,114 +164,73 @@ else
                    </div>
                 </div>
             </div>
-            
-            <!--  sample notification -->
-            
- <div class="col-lg-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bell fa-fw"></i> Notifications Panel
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="list-group">
-								
-								
-								
-								
+            <!--  sample notification -->   
+        <div class="col-lg-3">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <i class="fa fa-bell fa-fw"></i> Notifications Panel
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                <div class="list-group">
 								<?php
-								include '../config.php';
+								  include '../config.php';
 
-		$db = pg_connect("$host $port $dbname $user $password");
+            		if(!$db){
+            		echo pg_last_error();
+            		} 
+            		else {
+            			$datetime = new DateTime( "2012-09-02" );
+                  $data_date= $datetime->format( 'Y-m-d' );
+            			echo "DATE : ";
+            			echo $data_date;
+            			$result_expire = pg_query($db,"SELECT name,dose,expiry_date FROM stock where (expiry_date - '$data_date')<10 order by expiry_date desc;");
+            		  $result_stock=pg_query($db,"SELECT name,dose,expiry_date FROM stock where (quantity<3) order by quantity;");
+            		
+            		    while($row=pg_fetch_row($result_expire))
+            				{
+            					if($row[2]>$data_date)
+            					{
+            					?>
+            					  <a href="#" class="list-group-item">
+                          <span><i class="fa fa-comment fa-fw"></i> <?php echo $row[0]; echo "- $row[1]"; ?> expires on <?php echo $row[2] ?>             
+                                                </span></a> 
+            					<?php
+            					
+            				}
+            				else
+            				{
+            					
+            					?>
+            					  <a href="#" class="list-group-item">
+                        <span><i class="fa fa-comment fa-fw"></i> <?php echo $row[0] ; echo "- $row[1]"; ?> expired on <?php echo $row[2] ?>
+                        </span></a> 
+            					<?php	
+            				}
+            					
+                  }	
+            		}
 
-		if(!$db){
-		echo pg_last_error();
-		} 
-		else {
-			
-			
-			
-			$datetime = new DateTime( $row['destroy_date'] );
-$data_date= $datetime->format( 'Y-m-d' );
-			echo "DATE : ";
-			echo $data_date;
-			$result_expire = pg_query($db,"SELECT name,dose,expiry_date FROM stock where (expiry_date - '$data_date')<10 order by expiry_date desc;");
-		    $result_stock=pg_query($db,"SELECT name,dose,expiry_date FROM stock where (quantity<3) order by quantity;");
-		
-		
-		
-		
-		
-		while($row=pg_fetch_row($result_expire))
-				{
-					if($row[2]>$data_date)
-					{
-					?>
-					  <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> <?php echo $row[0]; echo "- $row[1]"; ?> expires on <?php echo $row[2] ?>  
-                                   
-                                    </span>
-                                </a> 
-					<?php
-					
-				}
-				else
-				{
-					
-					?>
-					  <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> <?php echo $row[0] ; echo "- $row[1]"; ?> expired on <?php echo $row[2] ?>  
-                                   
-                                    </span>
-                                </a> 
-					<?php
-					
-					
-				}
-					
-					
-					
-					
-					}
-					
-		
-		
-		
-		}
-								
-								
-								
-								
-								
-								while($row=pg_fetch_row($result_stock))
-										
+								while($row=pg_fetch_row($result_stock))	
 								{
-									
 									?>
-					  <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> <?php echo $row[0]; echo "- $row[1]"; ?> has a low stock  
-                                   
-                                    </span>
-                                </a> 
-					<?php
-									
-								}
-								
-								
-								?>
-			                </div>
-                            <!-- /.list-group -->
-                            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>            
-            
+        					  <a href="#" class="list-group-item">
+                    <span><i class="fa fa-comment fa-fw"></i> <?php echo $row[0]; echo "- $row[1]"; ?> has a low stock  
+                    </span></a> 
+        					<?php } ?>
+                </div>
+          <!-- /.list-group -->
+                <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+            </div>
+            <!-- /.panel-body -->
+          </div>            
             <!-- done notification-->
-            
-            
-
+            <!-- col-lg -->
+          </div>
+          <!-- row -->
+        </div>
         <div class="row">
-            
+          <hr>
         <!-- Footer -->
             <footer>
                <div class="row">
@@ -283,6 +247,8 @@ $data_date= $datetime->format( 'Y-m-d' );
       window.onload=function(){
           window.count = 4;
           window.email = <?php echo "'$email'"?>;
+          window.query = "";
+          window.pending = 0;
           fetchPres(window.email,window.count);
       }
 
@@ -291,7 +257,8 @@ $data_date= $datetime->format( 'Y-m-d' );
         $.post("prescriptions.php",
           {
               email : id,
-              num_row: num  // num of rows to show
+              num_row: num,  // num of rows to show
+              query: window.query
           }).done(function(data){
               if(data.indexOf("ERROR")!=-1)
               {
@@ -299,20 +266,6 @@ $data_date= $datetime->format( 'Y-m-d' );
               }
               else{
               $("#accordion").empty().append(data);
-             
-
-              $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-
-                var div = this.parentNode.parentNode;
-
-                for(var i =0;i<div.childNodes.length;i++)
-                  {
-                    type = typeof div.childNodes[i].id;
-
-                    if(type!="undefined"&&div.childNodes[i].id=="filelabel")
-                      div.childNodes[i].innerHTML=label;
-                  }
-                });
               }
           });
       }
@@ -323,50 +276,94 @@ $data_date= $datetime->format( 'Y-m-d' );
         fetchPres(window.email,window.count);
       }
 
-function confirm_patient(val){
-    var arr = val.split(";");
+      $("#searchtext").keyup(function(event){
+        if(event.keyCode == 13){
+          $("#search").click();
+          }
+        });
 
-    var status = arr[5];
+      document.getElementById("search").onclick = function()
+      {
+        var searchtext = document.getElementById("searchtext").value;
+        // alert(searchtext);
+        window.query = searchtext;
+        fetchPres(window.email,10);
+      }
 
-    if(status.localeCompare("delivered")==0)
-    {
-      //alert("Already delivered by "+arr[1]+" at "+arr[3]);
-      bootbox.alert("Already delivered by "+arr[1]+" on "+arr[3]);
-    }
-    else
-    {
-      
-      bootbox.prompt({
-        title: "Please enter password for "+ arr[2],
-        value: "meddb",
-        callback: function(result) {
-      if (result!=null){
-            $.post("prescription_confirm.php",{
-            id_doc : arr[0],
-            id_pha : arr[1],
-            id_pat : arr[2],
-            timestamp : arr[3],
-            description : arr[4],
-            pwd : result
-         }).done(function(data){
-          if(data.indexOf("SUCCESS")!=-1)
+      document.getElementById("reload").onclick = function()
+      {
+        // alert(searchtext);
+        window.query = "";
+        fetchPres(window.email,2);
+      }
+
+      function confirm_patient(val){
+          var arr = val.split(";");
+
+          var status = arr[5];
+          
+          if(status.localeCompare("delivered")==0)
           {
-            bootbox.alert("Password is correct.");
-            location.reload();
+            //alert("Already delivered by "+arr[1]+" at "+arr[3]);
+            bootbox.alert("Delivered by "+arr[1]+" on "+arr[3]);
           }
           else
           {
-            bootbox.alert(data);
-          }
-         });
-        }
-      }
-      });
-        
+            
+            bootbox.prompt({
+              title: "Please enter password for "+ arr[2],
+              value: "meddb",
+              callback: function(result) {
+            if (result!=null){
+                  $.post("prescription_confirm.php",{
+                  id_doc : arr[0],
+                  id_pha : arr[1],
+                  id_pat : arr[2],
+                  timestamp : arr[3],
+                  description : arr[4],
+                  suggmed : arr[6],
+                  pwd : result
+               }).done(function(data){
+                if(data.indexOf("SUCCESS")!=-1)
+                {
+                  bootbox.alert("Password is correct.");
+                  location.reload();
+                }
+                else
+                {
+                  bootbox.alert(data);
+                }
+               });
+              }
+            }
+            });
+              
 
-    }
-  
-  }
+          }
+        
+        }
+
+
+        function checkPending()
+        {
+          var data = "<?php 
+          include '../config.php';
+          $res = pg_query($db,'SELECT * FROM temp_prescription WHERE status=0');
+          echo pg_num_rows($res); ?>";
+
+          var val = parseInt(data);
+
+          if(val>window.pending)
+          {
+            window.pending = val;
+            bootbox.alert("Pending prescriptions - ".concat(data));
+            fetchPres(window.email,val+2);
+          }
+
+        }
+
+        setInterval("checkPending()",1000);
+        
       </script>
       <!-- Script to Activate the Carousel -->
    </body>

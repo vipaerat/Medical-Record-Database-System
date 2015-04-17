@@ -36,6 +36,8 @@ if(isset($_POST['save']))
     $city = $_POST['city'];
     $state = $_POST['state'];
     $pin_code = $_POST['pin_code'];
+    $error1="";
+    $error2="";
 
     $pharmacistInfoUpdateQuery = <<<EOF
         UPDATE pharmacist
@@ -84,7 +86,7 @@ EOF;
         $error2 = "";
     }
     
-    if(strlen($error1) == 0 && strlen($error) == 0)
+    if(strlen($error1) == 0 && strlen($error2) == 0)
     {
         $_SESSION['result'] = "Successfully Updated";
     }
@@ -185,6 +187,9 @@ while($phone_no = pg_fetch_row($res))
                     <li>
                         <a href="add_medicine.php">Add Medicines</a>
                     </li>
+                    <li>
+                      <a href="inventory.php">Inventory</a>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -208,8 +213,6 @@ while($phone_no = pg_fetch_row($res))
 
         <!-- Page Heading/Breadcrumbs -->
         <div class="row">
-			
-			
             <div class="col-lg-12">
                 <h1 class="page-header">Profile
                 </h1>
@@ -222,11 +225,7 @@ while($phone_no = pg_fetch_row($res))
         </div>
         
         <!-- The Profile details are displayed here -->
-
-
-
-
-<div class="row">
+            <div class="row">
             <div class="col-md-8">
                     <div class="container" id="initial" >
                      <div class="row">
@@ -322,7 +321,7 @@ while($phone_no = pg_fetch_row($res))
                         <div class="controls">
                             <label class="control-label col-md-3">Qualification:</label>
                             <div class="col-md-9">
-                                <input type="text" name="qualification" class="form-control" style="width:100px;" id="gender" value= "<?php echo $qualification; ?>">
+                                <input type="text" name="qualification" class="form-control" style="width:300px;" id="gender" value= "<?php echo $qualification; ?>">
                             </div>
                         </div>
                     </div>
@@ -389,7 +388,7 @@ while($phone_no = pg_fetch_row($res))
     </script>
 
 
-    <div class="control-group form-group">
+                    <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Email Address:</label>
                             <div class="col-md-9">
@@ -407,7 +406,7 @@ while($phone_no = pg_fetch_row($res))
                     <div class="control-group form-group">
                         <div class="controls">
                             <div class="col-md-1"></div>
-                            <label class="control-label col-md-3">House_no:</label>
+                            <label class="control-label col-md-3">House No:</label>
                             <div class="col-md-7">
                                 <input type="text" name="house_no" class="form-control" style="width:300px;" id="house_no" placeholder="House_no" value="<?php echo $house_no; ?>">
                             </div>
@@ -476,9 +475,9 @@ while($phone_no = pg_fetch_row($res))
         }
         ?>
 
-         <hr>
-
         <!-- Footer -->
+        <div class="row">
+            <hr>
         <footer>
             <div class="row">
                 <div class="col-lg-12">
@@ -486,6 +485,7 @@ while($phone_no = pg_fetch_row($res))
                 </div>
             </div>
         </footer>
+    </div>
         </div>
     <!-- /.container -->
 

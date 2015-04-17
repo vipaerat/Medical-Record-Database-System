@@ -100,8 +100,10 @@ if(isset($_POST['update']))
     <!-- Custom Fonts -->
     <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     
-
-  
+    <script src="../js/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../js/bootstrap.min.js"></script>   
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -139,6 +141,9 @@ if(isset($_POST['update']))
                     <li class="active">
                         <a href="add_medicine.php">Add Medicines</a>
                     </li>
+                    <li>
+                      <a href="inventory.php">Inventory</a>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $username; ?><b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -163,15 +168,13 @@ if(isset($_POST['update']))
 
         <!-- Page Heading/Breadcrumbs -->
             <div class="row">
-			
-			
             <div class="col-lg-12">
                 <h1 class="page-header">Add Medicines
                 </h1>
                 <ol class="breadcrumb">
                     <li><a href="index.php">Home</a>
                     </li>
-                    <li class="active">Add_Medicines</li>
+                    <li class="active">Add Medicines</li>
                 </ol>
             </div>
 
@@ -281,7 +284,7 @@ if(isset($_POST['update']))
                             <label class="control-label col-md-3">Expiry Date:</label>
                             <div class="col-md-4">
                               
-                            <input  type="text" name="expiry_date" class="form-control" placeholder="ExpiryDate"  id="datepicker">
+                            <input  type="date" name="expiry_date" class="form-control" placeholder="ExpiryDate">
                            
                             </div>
                             <p class="help-block"></p>
@@ -291,8 +294,6 @@ if(isset($_POST['update']))
                    <div class="control-group form-group">
                         <div class="controls">
                             <label class="control-label col-md-3">Quantity: </label>
-                            
-                            
                             <div class="col-md-4">
                              <div class="input-group">
                                 <input type="text" name="quantity" class="form-control"  id="quantity" value="1" />
@@ -338,13 +339,19 @@ if(isset($_POST['update']))
    
           </div>
          </div>
-         
-     
-        
+         <div class="row">
+            <hr>
+        <!-- Footer -->
+            <footer>
+               <div class="row">
+                  <div class="col-lg-12">
+                     <p>Copyright &copy; Medical Database Management System 2014</p>
+                  </div>
+               </div>
+           </footer>
+        </div>
     </div>
     
-   
-    <script src="../js/jquery.js"></script>
     <script type="text/JavaScript">
     
     function up(elem)
@@ -380,10 +387,10 @@ if(isset($_POST['update']))
         });
        
 
+    </script> 
+     <script type="text/JavaScript">
+      $('.datepicker').datepicker();
     </script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../js/bootstrap.min.js"></script>    
-     
     
     
    </body>

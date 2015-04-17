@@ -417,7 +417,7 @@ EOF;
                         <div class="controls">
                             <label class="control-label col-md-3">Date of Birth:</label>
                             <div class="col-md-9">
-                                <input type="date" class="form-control"  name="dob" value="<?php echo $date_of_birth; ?>" >
+                                <input type="date" class="form-control"  style="width:200px;" name="dob" value="<?php echo $date_of_birth; ?>" >
                             </div>
                         </div>
                     </div>

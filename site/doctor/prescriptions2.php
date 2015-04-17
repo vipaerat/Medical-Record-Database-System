@@ -13,49 +13,39 @@
 		$email = $_POST['email'];
 		$numr = $_POST['num_row'];
 
-		$search_query= $_POST['query'];
-
 		// echo "Opened database successfully\n\n\n";
-		if(strcmp($search_query,"")==0)
-			$query = "SELECT * FROM Prescription WHERE id_pat='$email' ORDER BY time_stamp DESC;";
-		else
-			$query = "SELECT * FROM Prescription WHERE id_pat='$email' AND
-								(id_pha LIKE '%$search_query%' OR id_doc LIKE '%$search_query%') ORDER BY time_stamp DESC;";
-		
-		$result = pg_query($db,$query);
-
-		// echo "Opened database successfully\n\n\n";
+		$result = pg_query($db,'SELECT * FROM Prescription ORDER BY time_stamp;');
 
 		$arr = pg_fetch_all($result);
 		$num_rows = pg_num_rows($result);
 
-		$body = "<div class=\"panel panel-default\">
+		$body = "<div class=\"panel panel-default\" id=\"%d\">
 				   <div class=\"panel-heading\" role=\"tab\" id=\"heading%d\">
 				      <h4 class=\"panel-title\">
-				         <a %s style='text-decoration:none' data-toggle=\"collapse\" href=\"#collapse%d\" aria-expanded=\"%s\" aria-controls=\"collapse%d\">
+				         <a style='text-decoration: none;' %s data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse%d\" aria-expanded=\"%s\" aria-controls=\"collapse%d\">
 				         Prescription #%d
 				         </a>
 				      </h4>
 				   </div>
-				   <div id=\"collapse%d\" class=\"panel-collapse %s\" role=\"tabpanel\" aria-labelledby=\"heading%d\">
+				   <div id=\"collapse%d\" class=\"panel-collapse collapse %s\" role=\"tabpanel\" aria-labelledby=\"heading%d\">
 				    <div class=\"panel-body\">
 				    <div class='row'>
 				    	<div class='col-md-8'>
-				    		<table class='table text-left table-striped'>
-							<tr><td class='col-md-4'><b>Patient:</b></td>
-								<td class='col-md-4'>%s</td></tr>
-							<tr><td class='col-md-4'><b>Doctor:</b></td>
-								<td class='col-md-4'>%s</td></tr>
-							<tr><td class='col-md-4'><b>Pharmacist:</b></td>
-								<td class='col-md-4'>%s</td></tr>
-							<tr><td class='col-md-4'><b>Date:</b></td>
-								<td class='col-md-4'>%s</td></tr>
-							<tr><td class='col-md-4'><b>Description:</b></td>
-								<td class='col-md-4'>%s</td></tr>
-							<tr><td class='col-md-4'><b>Attachments:</b></td>
+				    		<table class='table table-striped'>
+							<tr><td><b>Patient:</b></td>
+								<td>%s</td></tr>
+							<tr><td><b>Doctor:</b></td>
+								<td>%s</td></tr>
+							<tr><td><b>Pharmacist:</b></td>
+								<td>%s</td></tr>
+							<tr><td><b>Date:</b></td>
+								<td>%s</td></tr>
+							<tr><td><b>Description:</b></td>
+								<td>%s</td></tr>
+							<tr><td><b>Attachments:</b></td>
 								<td><ul class='list-inline'>%s</ul></td></tr>
 							<tr><td><b>Suggested Medicine:</b></td>
-							<td><ul>%s</ul></td></tr>
+							<td><ul class='list'>Hello</ul></td></tr>
 							</table>
 						</div>
 						<div class='col-md-4'>
@@ -68,7 +58,7 @@
 								<span class='btn btn-default btn-file'>Browse
 									<input type='file' name='file' id='file'/>
 								</span>
-								<button type='submit' class='btn btn-primary'>Upload Test</button><br><br>
+								<button type='submit' class='btn btn-primary'>Upload Certificate</button><br><br>
 								<span id='filelabel'>No file selected.</span>
 							</div>
 							<br>
@@ -111,7 +101,7 @@
 			if($arr[$row]['medical_cert']!=null)
 			{
 				$time = explode(" ",$timestamp);
-				$base64 = "./show.php?pat=$id_pat&doc=$id_doc&pha=$id_pha&date=$time[0]&time=$time[1]&type=cert&indx=0";
+				$base64 = "./show.php?pat=$id_pat&doc=$id_doc&pha=$id_pha&date=$time[0]&time=$time[1]";
 				// $base64 = 'data:image/jpeg;base64,' . base64_encode(pg_unescape_bytea($arr[$row]['medical_cert']));
 				$base64="<a id='medcert' target='blank' href=$base64>Get Certificate</a>";
 			}
@@ -138,37 +128,18 @@
 	  			$attach=$attach."<li><a target='blank' href=$att>".($r+1)."</a></li>";
 	  		}
 
-	  		$query = "SELECT name,dose,quantity FROM Suggested_med WHERE 
-	  								id_pha = '$id_pha' AND id_doc = '$id_doc' AND id_pha = '$id_pha' AND time_stamp='$timestamp'";
-			//echo $query;
-	  		$res = pg_query($db,$query);
-	  		$numrows = pg_num_rows($res);
-	  		$res = pg_fetch_all($res);
-
-	  		$med_text="";
-
-			if($numrows==0)
-	  		{
-	  			$med_text="None";
-	  		}
-
-			for($i=0;$i<$numrows;$i++)
+			if($row==0)
 			{
-				$med_text=$med_text."<li>".$res[$i]['name']." (".$res[$i]['dose'].") - ".$res[$i]['quantity']."</li>";
-			}
-
-			// if($row==0)
-			// {
-		  		$text = $text.sprintf($body,$row+1,'class="btn-block"',$row+1,'true',$row+1,$row+1,
+		  		$text = $text.sprintf($body,$row+1,$row+1,'class="btn-block"',$row+1,'true',$row+1,$row+1,
 		  			$row+1,'in',$row+1,$username,$doc,$pha,date($format, strtotime($timestamp)),
-		  			$description,$attach,$med_text,$id_doc,$id_pha,$id_pat,$timestamp,$base64);
-		 //  	}
-		 //  	else
-		 //  	{
-		 //  		$text = $text.sprintf($body,$row+1,'class="collapsed btn-block"',$row+1,'false',$row+1,
-		 //  			$row+1,$row+1,'',$row+1,$username,$doc,$pha,date($format, strtotime($timestamp)),
-		 //  			$description,$attach,$med_text,$id_doc,$id_pha,$id_pat,$timestamp,$base64);
-			// }
+		  			$description,$attach,$id_doc,$id_pha,$id_pat,$timestamp,$base64);
+		  	}
+		  	else
+		  	{
+		  		$text = $text.sprintf($body,$row+1,$row+1,'class="collapsed btn-block"',$row+1,'false',$row+1,
+		  			$row+1,$row+1,'',$row+1,$username,$doc,$pha,date($format, strtotime($timestamp)),
+		  			$description,$attach,$id_doc,$id_pha,$id_pat,$timestamp,$base64);
+			}
 		}
 
 		echo $text;

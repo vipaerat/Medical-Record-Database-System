@@ -148,6 +148,11 @@ footer {
     content:"\e080";
 }
 
+/*table td {
+    width: 300px;
+    text-align: left;
+}*/
+
 .tab {
 text-indent:20px;
 }
