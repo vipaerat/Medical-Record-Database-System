@@ -12,26 +12,23 @@ ini_set("display_errors",1);
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
-<meta name="author" content="divya" >
 
 
 
 <script type="text/javascript">
-function fetchPres(searchQuery)
+function fetchPres()
       {
         $.post("show_inventory.php",
           {
-              query : searchQuery,
+              query : document.getElementById('query').value
           }).done(function(data){
-              if(data.indexOf("ERROR")!=-1)
-              {
-                  alert(data);
-              }
-              else{
               $("#accordion").empty().append(data);
-              }
+              $('[data-toggle="popover"]').popover({
+placement : 'right'
+});
           });
       }
+      window.onload = fetchPres;
       </script> 
 <title>Medical Record Managment System</title>
 
@@ -130,110 +127,23 @@ placement : 'right'
 <div class="row">
 <div class="col-md-6 col-md-offset-3 searchbox">
 <div class="input-group">
-<input type="text" class="form-control" placeholder="Search for...">
+<input type="text" id="query" onkeyup="fetchPres()" class="form-control" placeholder="Search for...">
 <span class="input-group-btn">
-<button class="btn btn-default" name="search" type="button"><i class="fa fa-search"></i></button>
+<button class="btn btn-default" name="search" onclick="fetchPres()" type="button"><i class="fa fa-search"></i></button>
 </span>
 </div>
 <!-- /input-group -->
 </div>
 </div>
 
+<div id="accordion">
+</div>
 
 
-
-
-<?php
-
-
-
-
-include('../config.php');
-
-
-
-//Some rough php code to connect to db and returns the Stock table
-
-
-$stockInventoryQuery =<<<EOF
-SELECT name,dose,expiry_date,quantity
-FROM stock
-EOF;
-
-$ret = pg_query($db,$stockInventoryQuery);
-
-
-$i=0;
-//echo $field;
-echo ' <div class="table-responsive">
-<table class="table">
-<thead>
-<tr>';
-
-
-
-while($i<pg_num_fields($ret))
-{
-$field=pg_field_name($ret,$i);
-
-
-echo '<th>',strtoupper($field) ,'</th>';
-
-$i=$i+1;
-}
-
-
-echo '</tr> </thead> <tbody>';
-$k=0;
-while($row = pg_fetch_row($ret)){
-$j=0;
-echo '<tr>';
-
-//fetching salts for all medicines
-
-	$name = $row[0];
-	$dose = $row[1];
-
-	$saltQuery = "SELECT salt FROM med_salts WHERE name='$name' and dose=$dose;";
-
-	$saltRes = pg_query($db,$saltQuery);
-
-	$salts = '<ul class="list-unstyled">';
-
-	while($fetchSalts = pg_fetch_row($saltRes))
-	{
-		$salts = $salts . "<li>" . $fetchSalts[0] . "</li>";
-	}
-
-
-	$salts = $salts . "</ul>";
-
-while($j<pg_num_fields($ret))
-{
-
-
-if($j==0)
-{
-$a=$row[$j];
-echo '<td> <a href="javascript:void(0);" data-html="true"  data-toggle="popover" data-trigger="focus" title="Salts" data-content=\''. $salts .'\'>',$a,'</a> </td>';
-}
-else{
-echo '<td>',$row[$j],'</td>';
-}
-$j=$j+1;
-}
-echo '</tr>';
-$k=$k+1;
-}
-
-
-
-echo '</tbody></table> </div>';
-
-
-?>
 
 </div>
+
+
 
 </body>
 </html>
